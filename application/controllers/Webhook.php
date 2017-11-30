@@ -80,7 +80,7 @@ class Webhook extends CI_Controller {
  
       // create welcome message
       $message  = "Terimakasih sudah menambahkan sebagai teman, " . $profile['displayName'] . "!\n";
-      $message .= "Kirim pesan \\buat untuk membuat permainan.";
+      $message  = "Kirim pesan \\buat untuk membuat permainan.";
       $textMessageBuilder = new TextMessageBuilder($message);
  
       // create sticker message

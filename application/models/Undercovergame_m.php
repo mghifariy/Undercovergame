@@ -34,15 +34,13 @@ class Tebakkode_m extends CI_Model {
     return $this->db->insert_id();
   }
 
-  function saveUser($profile){}
-
   // Question
-  function getQuestion($questionNum){}
+  //function getQuestion($questionNum){}
 
-  function isAnswerEqual($number, $answer){}
+  //function isAnswerEqual($number, $answer){}
 
-  function setUserProgress($line_id, $newNumber){}
+  //function setUserProgress($line_id, $newNumber){}
 
-  function setScore($line_id, $score){}
+  //function setScore($line_id, $score){}
 
 }
