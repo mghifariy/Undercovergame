@@ -119,6 +119,47 @@ class Webhook extends CI_Controller {
   private function textMessage($event)
   {
     $userMessage = $event['message']['text'];
+    
+    switch ($userMessage) {
+      
+      case '.buat':
+        $message = 'Game Berhasil dibuat';
+        $textMessageBuilder = new TextMessageBuilder($message);
+        $response = $this->bot->replyMessage($replyToken, $messageBuilder);
+        break;
+      
+      case '.mulai':
+        $message = 'Game akan segera dimulai, silahkan cek personal chat dengat bot';
+        $textMessageBuilder = new TextMessageBuilder($message);
+        $response = $this->bot->replyMessage($replyToken, $textMessageBuilder);
+        break;
+
+      case '.join':
+                # code...
+        break;
+
+      case '.pemain':
+        # code...
+        break;
+
+      case '.leave':
+        $message = 'Terimakasih sudah bermain bersama kami.';
+        $textMessageBuilder = new TextMessageBuilder($message);
+        $response = $this->bot->replyMessage($replyToken, $textMessageBuilder);
+        break;
+          
+      case '.bantuan':
+        # code...
+        break;
+
+
+
+      default:
+        continue;
+        break;
+    }
+
+
     if($this->user['number'] == 0)
     {
       if(strtolower($userMessage) == 'mulai')
