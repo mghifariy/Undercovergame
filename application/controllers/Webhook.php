@@ -158,6 +158,13 @@ class Webhook extends CI_Controller {
                                                 new TextMessageBuilder($message));
           break;
 
+        case '.batal':
+          $this->undercovergame_m->deleteGame($roomId);
+          $message = 'Permainan dibatalkan';
+          $response = $this->bot->replyMessage($replyToken, 
+                                                new TextMessageBuilder($message));
+          break;
+
         case '.leave':
           if(isset($event['source']['roomId'])){
             
