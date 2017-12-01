@@ -121,107 +121,91 @@ class Webhook extends CI_Controller {
   {
     $userMessage = $event['message']['text'];
     $replyToken = $event['replyToken'];
-    
-    switch ($userMessage) {
-      
-      case '.buat':
-        $message = 'Game Berhasil dibuat';
-        $response = $this->bot->replyMessage($replyToken, 
-                                              new TextMessageBuilder($message));
-        break;
-      
-      case '.mulai':
-        $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
-        $response = $this->bot->replyMessage($replyToken, 
-                                              new TextMessageBuilder($message));
-        break;
 
-      case '.join':
-        $message = 'Kamu berhasil masuk ke permainan';
-        $response = $this->bot->replyMessage($replyToken, 
-                                              new TextMessageBuilder($message));
-        break;
-
-      case '.pemain':
-        $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
-        $response = $this->bot->replyMessage($replyToken, 
-                                              new TextMessageBuilder($message));
-        break;
-
-      case '.leave':
-        if(isset($event['source']['roomId'])){
-          $roomId = $event['source']['roomId'];
-          $message = 'Terimakasih sudah bermain bersama kami.';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
-          $response = $this->bot->leaveRoom($roomId);
-        }elseif (isset($event['source']['groupId'])) {
-          $groupId = $event['source']['groupId'];
-          $message = 'Terimakasih sudah bermain bersama kami.';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
-          $response = $this->bot->leaveGroup($groupId);
-        }else{
-          $message = 'Gila lu, mana tega gw ninggalin lu sendiri !!!';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
-        }
-        break;
-          
-      case '.bantuan':
-        $message = 'Game Berhasil dibuat';
-        $response = $this->bot->replyMessage($replyToken, 
-                                              new TextMessageBuilder($message));
-        break;
-
-
-
-      default:
-        continue;
-        break;
-    }
-
-    /*
-
-    if($this->user['number'] == 0)
+    if(! isset($event['source']['userId'])) 
     {
-      if(strtolower($userMessage) == 'mulai')
-      {
-        // reset score
-        $this->undercovergame_m->setScore($this->user['user_id'], 0);
-        // update number progress
-        $this->undercovergame_m->setUserProgress($this->user['user_id'], 1);
-        // send question no.1
-        $this->sendQuestion($event['replyToken'], 1);
-      } else {
+      $roomId = (isset($event['source']['roomId'])) ? $event['source']['roomId'] : $event['source']['groupId'];
+      
+      switch ($userMessage) {
+        
+        case '.buat':
+          if (!$this->undercovergame_m->playingGame($roomId)) {
+            $this->undercovergame_m->setGame($roomId);
+            $message = 'Game Berhasil dibuat';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }else{
+            $message = 'sudah ada game yang dibuat di room ini, silahkan bergabung';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }
 
-    //     $buttonTemplate = new ButtonTemplateBuilder("Kuis Dayatura", "Silahkan klik START untuk memulai permaian", "http://broadway-performance-systems.com/images/quick_start-1.jpg", ["MULAI","Ga Mau"]);
- 
-    // // build message
-    //     $messageBuilder = new TemplateMessageBuilder("Gunakan mobile app untuk melihat soal", $buttonTemplate);
+          $message = 'Game Berhasil dibuat';
+          $response = $this->bot->replyMessage($replyToken, 
+                                                new TextMessageBuilder($message));
+          break;
+        
+        case '.join':
 
-        // $message = 'Silakan kirim pesan "MULAI" untuk memulai kuis.';
-        // $textMessageBuilder = new TextMessageBuilder($message);
-        // $this->bot->replyMessage($event['replyToken'], $textMessageBuilder);
 
-        $this->bot->replyMessage(
-                    $event['replyToken'],
-                    new TemplateMessageBuilder(
-                        'Confirm alt text',
-                        new ConfirmTemplateBuilder('Silahkan tap MULAI untuk memulai permaian', [
-                            new MessageTemplateActionBuilder('MULAI', 'Mulai'),
-                            new MessageTemplateActionBuilder('GO!', 'Mulai'),
-                        ])
-                    )
-                );
+
+          $message = 'Kamu berhasil masuk ke permainan';
+          $response = $this->bot->replyMessage($replyToken, 
+                                                new TextMessageBuilder($message));
+          break;
+        
+        case '.mulai':
+
+
+          $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
+          $response = $this->bot->replyMessage($replyToken, 
+                                                new TextMessageBuilder($message));
+          break;
+
+        case '.pemain':
+          $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
+          $response = $this->bot->replyMessage($replyToken, 
+                                                new TextMessageBuilder($message));
+          break;
+
+        case '.leave':
+          if(isset($event['source']['roomId'])){
+            
+            $roomId = $event['source']['roomId'];
+            $message = 'Terimakasih sudah bermain bersama kami.';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+            $this->undercovergame_m->deleteGame($roomId);
+            $response = $this->bot->leaveRoom($roomId);
+          }elseif (isset($event['source']['groupId'])) {
+            $groupId = $event['source']['groupId'];
+            $message = 'Terimakasih sudah bermain bersama kami.';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+            $this->undercovergame_m->deleteGame($roomId);
+            $response = $this->bot->leaveGroup($groupId);
+          }else{
+            $message = 'Gila lu, mana tega gw ninggalin lu sendiri !!!';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }
+          break;
+            
+        case '.bantuan':
+          $message = 'Game Berhasil dibuat';
+          $response = $this->bot->replyMessage($replyToken, 
+                                                new TextMessageBuilder($message));
+          break;
+
+        default:
+
+          break;
       }
- 
-    // if user already begin test
-    } else {
-      $this->checkAnswer($userMessage, $event['replyToken']);
     }
 
-    */
+    $message = 'Silahkan invite bot ke grup untuk memulai permaianan';
+    $response = $this->bot->replyMessage($replyToken, 
+                                          new TextMessageBuilder($message));
 
   }
 
