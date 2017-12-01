@@ -31,30 +31,50 @@ class Undercovergame_m extends CI_Model {
     return $this->db->insert_id();
   }
 
-  //Roles
-  function getRole($userId) {
-    $civilian = $this->db->where('id', 1)
-      ->get('roles')
-      ->row_array();
-    $undercover = $this->db->where('id', 2)
-      ->get('roles')
-      ->row_array();
-    $mrwhite = $this->db->where('id', 3)
-      ->get('roles')
-      ->row_array();
-
-    // Randomize Role
-    
-  }
-
   // Words
-  function getWord($role) {
-    $data = $this->db->get('words')->row_array();
+  function getWord($id) {
+    $data = $this->db->where('id', $id)->get('words')->row_array();
     if(count($data)>0) return $data;
     return false;
-
-    // Randomize Word
-    
   }
+
+  // Games
+  function setGame($room) {
+    $this->db->set('room_id', $room)
+    ->insert('games');
+
+    return $this->db->insert_id();
+  }
+
+  function getPlayingGame($room) {
+    $status = $this->db->where('playing', 'true')->get('games')->row_array();
+    if($status == 'true') return $status;
+    return false;
+  }
+
+  function setPlayingGame($room, $status) {
+    $this->db->where('room_id', $room)
+    ->set('playing', $status)
+    ->insert('games');
+
+    return $this->db->insert_id();
+  }
+
+  function deleteGame($room) {
+    $this->db->where('room_id', $room)
+    ->delete('games');
+
+    return $this->db->affected_rows();
+  }
+
+  // Player
+  function updateCivilian($room_id, $total) {
+    $this->db->where('id', $room_id)
+    ->set('civilian_tot', $total)
+    ->update('games');
+
+    return $this->db->affected_rows();
+  }
+
 
 }
