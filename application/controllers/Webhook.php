@@ -8,6 +8,7 @@ use \LINE\LINEBot\MessageBuilder\StickerMessageBuilder;
 use \LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use \LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder;
 use \LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
+use \LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
 
 class Webhook extends CI_Controller {
 
@@ -19,7 +20,7 @@ class Webhook extends CI_Controller {
   function __construct()
   {
     parent::__construct();
-    $this->load->model('undercovergame_m');
+    $this->load->model('tebakkode_m');
 
     // create bot object
     $httpClient = new CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
@@ -40,16 +41,19 @@ class Webhook extends CI_Controller {
     $this->events = json_decode($body, true);
 
     // log every event requests
-    $this->undercovergame_m->log_events($this->signature, $body);
+    $this->tebakkode_m->log_events($this->signature, $body);
+
+    file_put_contents('php://stderr', 'Body: '.$body);
 
     if(is_array($this->events['events'])){
       foreach ($this->events['events'] as $event){
- 
+        // your code here
+
         // skip group and room event
-        if(! isset($event['source']['userId'])) continue;
+        // if(! isset($event['source']['userId'])) continue;
  
         // get user data from database
-        $this->user = $this->undercovergame_m->getUser($event['source']['userId']);
+        $this->user = $this->tebakkode_m->getUser($event['source']['userId']);
  
         // if user not registered
         if(!$this->user) $this->followCallback($event);
@@ -65,11 +69,23 @@ class Webhook extends CI_Controller {
             }
           }
         }
- 
-      } // end of foreach
+
+      }
     }
 
   } // end of index.php
+
+  private function start_game()
+  {
+    # code...
+    // prepare button template
+    $buttonTemplate = new ButtonTemplateBuilder("Kuis Dayatura", "Silahkan klik START untuk memulai permaian", "http://broadway-performance-systems.com/images/quick_start-1.jpg", ["MULAI","Ga Mau"]);
+ 
+    // build message
+    $messageBuilder = new TemplateMessageBuilder("Gunakan mobile app untuk melihat soal", $buttonTemplate);
+
+    return $messageBuilder;
+  }
 
   private function followCallback($event)
   {
@@ -79,13 +95,13 @@ class Webhook extends CI_Controller {
       $profile = $res->getJSONDecodedBody();
  
       // create welcome message
-      $message  = "Terimakasih sudah menambahkan sebagai teman, " . $profile['displayName'] . "!\n";
-      $message  = "Kirim pesan \\buat untuk membuat permainan.";
+      $message  = "Salam kenal, " . $profile['displayName'] . "!\n";
+      $message .= "Silakan kirim pesan \"MULAI\" untuk memulai kuis.";
       $textMessageBuilder = new TextMessageBuilder($message);
  
       // create sticker message
-      //$stickerMessageBuilder = new StickerMessageBuilder(1, 3);
- 
+      $stickerMessageBuilder = new StickerMessageBuilder(1, 3);
+    
       // merge all message
       $multiMessageBuilder = new MultiMessageBuilder();
       $multiMessageBuilder->add($textMessageBuilder);
@@ -93,58 +109,126 @@ class Webhook extends CI_Controller {
  
       // send reply message
       $this->bot->replyMessage($event['replyToken'], $multiMessageBuilder);
- 
+      
+
       // save user data
-      $this->undercovergame_m->saveUser($profile);
+      $this->tebakkode_m->saveUser($profile);
     }
   }
 
   private function textMessage($event)
   {
     $userMessage = $event['message']['text'];
-    if(strtolower($userMessage) == '/buat')
+    if($this->user['number'] == 0)
     {
-      $message = $userMessage;
-      $textMessageBuilder = new TextMessageBuilder($message);
-      $this->bot->replyMessage($event['replyToken'], $textMessageBuilder);
+      if(strtolower($userMessage) == 'mulai')
+      {
+        // reset score
+        $this->tebakkode_m->setScore($this->user['user_id'], 0);
+        // update number progress
+        $this->tebakkode_m->setUserProgress($this->user['user_id'], 1);
+        // send question no.1
+        $this->sendQuestion($event['replyToken'], 1);
+      } else {
 
+        $this->bot->replyMessage(
+                    $event['replyToken'],
+                    new TemplateMessageBuilder(
+                        'Confirm alt text',
+                        new ConfirmTemplateBuilder('Silahkan tap MULAI untuk memulai permaian', [
+                            new MessageTemplateActionBuilder('MULAI', 'Mulai'),
+                            new MessageTemplateActionBuilder('GO!', 'Mulai'),
+                        ])
+                    )
+                );
+      }
+ 
+    // if user already begin test
     } else {
-      $message = 'Kirim pesan \buat untuk membuat permainan.';
-      $textMessageBuilder = new TextMessageBuilder($message);
-      $this->bot->replyMessage($event['replyToken'], $textMessageBuilder);
-    }
-
-    // if user join
-    if(strtolower($userMessage) == '/join')
-    {
-      $message  = $profile['displayName'] . " berhasil bergabung.";
+      $this->checkAnswer($userMessage, $event['replyToken']);
     }
   }
 
-  //private function stickerMessage($event){}
+  private function stickerMessage($event)
+  {
+    // create sticker message
+    $stickerMessageBuilder = new StickerMessageBuilder(1, 106);
+ 
+    // create text message
+    $message = 'Silakan kirim pesan "MULAI" untuk memulai kuis.';
+    $textMessageBuilder = new TextMessageBuilder($message);
+ 
+    // merge all message
+    $multiMessageBuilder = new MultiMessageBuilder();
+    $multiMessageBuilder->add($stickerMessageBuilder);
+    $multiMessageBuilder->add($textMessageBuilder);
+ 
+    // send message
+    $this->bot->replyMessage($event['replyToken'], $multiMessageBuilder);
+  }
 
-    public function askPlayer($replyToken)
-    {
-      // get question from database
-      //$question = $this->tebakkode_m->getQuestion($questionNum);
-      $message  = "Berapa jumlah undercover ?";
-   
-      // prepare answer options
-      for($opsi = 4; $opsi <= 10; $opsi++) {
-          if(!empty($question['option_'.$opsi]))
-              $options[] = new MessageTemplateActionBuilder($question[$opsi], $question[$opsi]);
-      }
-   
-      // prepare button template
-      $buttonTemplate = new ButtonTemplateBuilder($question['text']);
-   
-      // build message
-      $messageBuilder = new TemplateMessageBuilder("Silakan cek hp untuk melihat pesan.", $buttonTemplate);
-   
-      // send message
-      $response = $this->bot->replyMessage($replyToken, $messageBuilder);
+  public function sendQuestion($replyToken, $questionNum=1)
+  {
+    // get question from database
+    $question = $this->tebakkode_m->getQuestion($questionNum);
+ 
+    // prepare answer options
+    for($opsi = "a"; $opsi <= "d"; $opsi++) {
+        if(!empty($question['option_'.$opsi]))
+            $options[] = new MessageTemplateActionBuilder($question['option_'.$opsi], $question['option_'.$opsi]);
     }
+ 
+    // prepare button template
+    $buttonTemplate = new ButtonTemplateBuilder($question['number']."/10", $question['text'], $question['image'], $options);
+ 
+    // build message
+    $messageBuilder = new TemplateMessageBuilder("Gunakan mobile app untuk melihat soal", $buttonTemplate);
+ 
+    // send message
+    $response = $this->bot->replyMessage($replyToken, $messageBuilder);
+  }
 
-  //private function checkAnswer($message, $replyToken){}
+  private function checkAnswer($message, $replyToken)
+  {
+    // if answer is true, increment score
+    if($this->tebakkode_m->isAnswerEqual($this->user['number'], $message)){
+      $this->user['score']++;
+      $this->tebakkode_m->setScore($this->user['user_id'], $this->user['score']);
+    }
+ 
+    if($this->user['number'] < 10)
+    {
+      // update number progress
+     $this->tebakkode_m->setUserProgress($this->user['user_id'], $this->user['number'] + 1);
+ 
+      // send next question
+      $this->sendQuestion($replyToken, $this->user['number'] + 1);
+    }
+    else {
+      // create user score message
+      $message = 'Skormu '. $this->user['score'];
+      $textMessageBuilder1 = new TextMessageBuilder($message);
+ 
+      // create sticker message
+      $stickerId = ($this->user['score'] < 8) ? 100 : 114;
+      $stickerMessageBuilder = new StickerMessageBuilder(1, $stickerId);
+ 
+      // create play again message
+      $message = ($this->user['score'] < 8) ?
+'Wkwkwk! Nyerah? Ketik "MULAI" untuk bermain lagi!':
+'Great! Mantap bro! Ketik "MULAI" untuk bermain lagi!';
+      $textMessageBuilder2 = new TextMessageBuilder($message);
+ 
+      // merge all message
+      $multiMessageBuilder = new MultiMessageBuilder();
+      $multiMessageBuilder->add($textMessageBuilder1);
+      $multiMessageBuilder->add($stickerMessageBuilder);
+      $multiMessageBuilder->add($textMessageBuilder2);
+ 
+      // send reply message
+      $this->bot->replyMessage($replyToken, $multiMessageBuilder);
+      $this->tebakkode_m->setUserProgress($this->user['user_id'], 0);
+    }
+  }
 
 }
