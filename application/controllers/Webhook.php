@@ -133,10 +133,6 @@ class Webhook extends CI_Controller {
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
           }
-
-          $message = 'Game Berhasil dibuat';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
           break;
         
         case '.join':
