@@ -160,7 +160,7 @@ class Webhook extends CI_Controller {
           $message = 'Terimakasih sudah bermain bersama kami.';
           $response = $this->bot->replyMessage($replyToken, 
                                                 new TextMessageBuilder($message));
-          $response = $this->bot->leaveRoom($groupId);
+          $response = $this->bot->leaveGroup($groupId);
         }else{
           $message = 'Gila lu, mana tega gw ninggalin lu sendiri !!!';
           $response = $this->bot->replyMessage($replyToken, 
