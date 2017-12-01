@@ -137,11 +137,30 @@ class Webhook extends CI_Controller {
         
         case '.join':
 
+          $res = $this->bot->getProfile($event['source']['userId']);
+          $profile = $res->getJSONDecodedBody();
 
-
-          $message = 'Kamu berhasil masuk ke permainan';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
+          if ($this->undercovergame_m->getUser($event['source']['userId'])) 
+          {
+            if (!$this->undercovergame_m->checkPlayer($playerId, $roomId)) 
+            {
+              $response = $this->undercovergame_m->setPlayer($playerId,$roomId);
+              $message =  $profile['display_name'].' berhasil masuk ke permainan';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
+            }else
+            {
+              $message = $profile['display_name'].' sudah masuk permainan';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
+            }
+          }else
+          {
+            $message = $profile['display_name'].' sudah masuk permainan';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }
+          
           break;
         
         case '.mulai':
