@@ -50,7 +50,7 @@ class Webhook extends CI_Controller {
         // your code here
 
         // skip group and room event
-        // if(! isset($event['source']['userId'])) continue;
+        //if(! isset($event['source']['userId'])) continue;
  
         // get user data from database
         $this->user = $this->tebakkode_m->getUser($event['source']['userId']);
@@ -130,6 +130,15 @@ class Webhook extends CI_Controller {
         // send question no.1
         $this->sendQuestion($event['replyToken'], 1);
       } else {
+
+    //     $buttonTemplate = new ButtonTemplateBuilder("Kuis Dayatura", "Silahkan klik START untuk memulai permaian", "http://broadway-performance-systems.com/images/quick_start-1.jpg", ["MULAI","Ga Mau"]);
+ 
+    // // build message
+    //     $messageBuilder = new TemplateMessageBuilder("Gunakan mobile app untuk melihat soal", $buttonTemplate);
+
+        // $message = 'Silakan kirim pesan "MULAI" untuk memulai kuis.';
+        // $textMessageBuilder = new TextMessageBuilder($message);
+        // $this->bot->replyMessage($event['replyToken'], $textMessageBuilder);
 
         $this->bot->replyMessage(
                     $event['replyToken'],
