@@ -120,36 +120,44 @@ class Webhook extends CI_Controller {
   {
     $userMessage = $event['message']['text'];
     $replyToken = $event['replyToken'];
+    
     switch ($userMessage) {
       
       case '.buat':
         $message = 'Game Berhasil dibuat';
-        $textMessageBuilder = new TextMessageBuilder($message);
-        $response = $this->bot->replyMessage($replyToken, $messageBuilder);
+        $response = $this->bot->replyMessage($replyToken, 
+                                              new TextMessageBuilder($message));
         break;
       
       case '.mulai':
-        $message = 'Game akan segera dimulai, silahkan cek personal chat dengat bot';
-        $textMessageBuilder = new TextMessageBuilder($message);
-        $response = $this->bot->replyMessage($replyToken, $textMessageBuilder);
+        $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
+        $response = $this->bot->replyMessage($replyToken, 
+                                              new TextMessageBuilder($message));
         break;
 
       case '.join':
-                # code...
+        $message = 'Kamu berhasil masuk ke permainan';
+        $response = $this->bot->replyMessage($replyToken, 
+                                              new TextMessageBuilder($message));
         break;
 
       case '.pemain':
-        # code...
+        $message = 'Yang udah Join game: \n';
+        $message += 'Hidayaturrahman';
+        $response = $this->bot->replyMessage($replyToken, 
+                                              new TextMessageBuilder($message));
         break;
 
       case '.leave':
         $message = 'Terimakasih sudah bermain bersama kami.';
-        $textMessageBuilder = new TextMessageBuilder($message);
-        $response = $this->bot->replyMessage($replyToken, $textMessageBuilder);
+        $response = $this->bot->replyMessage($replyToken, 
+                                              new TextMessageBuilder($message));
         break;
           
       case '.bantuan':
-        # code...
+        $message = 'Game Berhasil dibuat';
+        $response = $this->bot->replyMessage($replyToken, 
+                                              new TextMessageBuilder($message));
         break;
 
 
