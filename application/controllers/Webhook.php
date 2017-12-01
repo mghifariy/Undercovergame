@@ -156,7 +156,7 @@ class Webhook extends CI_Controller {
             }
           }else
           {
-            $message = $profile['display_name'].' sudah masuk permainan';
+            $message = $profile['display_name'].' , silahkan add bot untuk ikut bermain';
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
           }
