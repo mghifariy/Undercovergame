@@ -153,7 +153,7 @@ class Webhook extends CI_Controller {
           $message = 'Terimakasih sudah bermain bersama kami.';
           $response = $this->bot->replyMessage($replyToken, 
                                                 new TextMessageBuilder($message));
-          $response = $bot->leaveRoom($roomId);
+          $response = $this->bot->leaveRoom($roomId);
         }
         break;
           
