@@ -80,7 +80,7 @@ class Undercovergame_m extends CI_Model {
     $playing = $this->db->where('user_id', $userId)
     ->where('room_id', $room_id)
     ->get('users')->row_array();
-    if(count($player)>0) return true;
+    if(count($playing)>0) return true;
     return false;
   }
 
