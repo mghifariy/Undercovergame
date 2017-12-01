@@ -116,7 +116,7 @@ class Webhook extends CI_Controller {
     $userMessage = $event['message']['text'];
     $replyToken = $event['replyToken'];
 
-    if(! isset($event['source']['userId'])) 
+    if(isset($event['source']['roomId']) || isset($event['source']['groupId'])) 
     {
       $roomId = (isset($event['source']['roomId'])) ? $event['source']['roomId'] : $event['source']['groupId'];
       
