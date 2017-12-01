@@ -1,5 +1,4 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
-
 use \LINE\LINEBot;
 use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use \LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
@@ -8,24 +7,19 @@ use \LINE\LINEBot\MessageBuilder\StickerMessageBuilder;
 use \LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use \LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder;
 use \LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
-
 class Webhook extends CI_Controller {
-
   private $bot;
   private $events;
   private $signature;
   private $user;
-
   function __construct()
   {
     parent::__construct();
     $this->load->model('undercovergame_m');
-
     // create bot object
     $httpClient = new CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
     $this->bot  = new LINEBot($httpClient, ['channelSecret' => $_ENV['CHANNEL_SECRET']]);
   }
-
   public function index()
   {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -33,15 +27,12 @@ class Webhook extends CI_Controller {
       header('HTTP/1.1 400 Only POST method allowed');
       exit;
     }
-
     // get request
     $body = file_get_contents('php://input');
     $this->signature = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : "-";
     $this->events = json_decode($body, true);
-
     // log every event requests
     $this->undercovergame_m->log_events($this->signature, $body);
-
     if(is_array($this->events['events'])){
       foreach ($this->events['events'] as $event){
  
@@ -68,9 +59,10 @@ class Webhook extends CI_Controller {
  
       } // end of foreach
     }
-
+    
+    // debuging data
+    file_put_contents('php://stderr', 'Body: '.$body);
   } // end of index.php
-
   private function followCallback($event)
   {
     $res = $this->bot->getProfile($event['source']['userId']);
@@ -98,11 +90,10 @@ class Webhook extends CI_Controller {
       $this->undercovergame_m->saveUser($profile);
     }
   }
-
   private function textMessage($event)
   {
     $userMessage = $event['message']['text'];
-    if(strtolower($userMessage) == '/buat')
+    if(strtolower($userMessage) == '')
     {
       // reset score
       //$this->tebakkode_m->setScore($this->user['user_id'], 0);
@@ -115,16 +106,13 @@ class Webhook extends CI_Controller {
       $textMessageBuilder = new TextMessageBuilder($message);
       $this->bot->replyMessage($event['replyToken'], $textMessageBuilder);
     }
-
     // if user join
     if(strtolower($userMessage) == '/join')
     {
       $message  = $profile['displayName'] . " berhasil bergabung.";
     }
   }
-
   //private function stickerMessage($event){}
-
     public function askPlayer($replyToken)
     {
       // get question from database
@@ -146,7 +134,5 @@ class Webhook extends CI_Controller {
       // send message
       $response = $this->bot->replyMessage($replyToken, $messageBuilder);
     }
-
   //private function checkAnswer($message, $replyToken){}
-
 }
