@@ -9,6 +9,7 @@ use \LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use \LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder;
 use \LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
 use \LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
+use \LINE\LINEBot\Event\MessageEvent\TextMessage;
 
 class Webhook extends CI_Controller {
 
@@ -151,9 +152,9 @@ class Webhook extends CI_Controller {
         if(isset($event['source']['roomId'])){
           $roomId = $event['source']['roomId'];
           $message = 'Terimakasih sudah bermain bersama kami.';
-          $response = $this->bot->leaveRoom($roomId);
           $response = $this->bot->replyMessage($replyToken, 
                                                 new TextMessageBuilder($message));
+          $response = $this->bot->leaveRoom($roomId);
         }
         break;
           
