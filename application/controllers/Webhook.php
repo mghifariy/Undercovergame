@@ -20,7 +20,7 @@ class Webhook extends CI_Controller {
   function __construct()
   {
     parent::__construct();
-    $this->load->model('tebakkode_m');
+    $this->load->model('undercovergame_m');
 
     // create bot object
     $httpClient = new CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
@@ -41,7 +41,7 @@ class Webhook extends CI_Controller {
     $this->events = json_decode($body, true);
 
     // log every event requests
-    $this->tebakkode_m->log_events($this->signature, $body);
+    $this->undercovergame_m->log_events($this->signature, $body);
 
     file_put_contents('php://stderr', 'Body: '.$body);
 
@@ -53,7 +53,7 @@ class Webhook extends CI_Controller {
         //if(! isset($event['source']['userId'])) continue;
  
         // get user data from database
-        $this->user = $this->tebakkode_m->getUser($event['source']['userId']);
+        $this->user = $this->undercovergame_m->getUser($event['source']['userId']);
  
         // if user not registered
         if(!$this->user) $this->followCallback($event);
@@ -112,7 +112,7 @@ class Webhook extends CI_Controller {
       
 
       // save user data
-      $this->tebakkode_m->saveUser($profile);
+      $this->undercovergame_m->saveUser($profile);
     }
   }
 
@@ -124,9 +124,9 @@ class Webhook extends CI_Controller {
       if(strtolower($userMessage) == 'mulai')
       {
         // reset score
-        $this->tebakkode_m->setScore($this->user['user_id'], 0);
+        $this->undercovergame_m->setScore($this->user['user_id'], 0);
         // update number progress
-        $this->tebakkode_m->setUserProgress($this->user['user_id'], 1);
+        $this->undercovergame_m->setUserProgress($this->user['user_id'], 1);
         // send question no.1
         $this->sendQuestion($event['replyToken'], 1);
       } else {
@@ -179,7 +179,7 @@ class Webhook extends CI_Controller {
   public function sendQuestion($replyToken, $questionNum=1)
   {
     // get question from database
-    $question = $this->tebakkode_m->getQuestion($questionNum);
+    $question = $this->undercovergame_m->getQuestion($questionNum);
  
     // prepare answer options
     for($opsi = "a"; $opsi <= "d"; $opsi++) {
@@ -200,15 +200,15 @@ class Webhook extends CI_Controller {
   private function checkAnswer($message, $replyToken)
   {
     // if answer is true, increment score
-    if($this->tebakkode_m->isAnswerEqual($this->user['number'], $message)){
+    if($this->undercovergame_m->isAnswerEqual($this->user['number'], $message)){
       $this->user['score']++;
-      $this->tebakkode_m->setScore($this->user['user_id'], $this->user['score']);
+      $this->undercovergame_m->setScore($this->user['user_id'], $this->user['score']);
     }
  
     if($this->user['number'] < 10)
     {
       // update number progress
-     $this->tebakkode_m->setUserProgress($this->user['user_id'], $this->user['number'] + 1);
+     $this->undercovergame_m->setUserProgress($this->user['user_id'], $this->user['number'] + 1);
  
       // send next question
       $this->sendQuestion($replyToken, $this->user['number'] + 1);
@@ -236,7 +236,7 @@ class Webhook extends CI_Controller {
  
       // send reply message
       $this->bot->replyMessage($replyToken, $multiMessageBuilder);
-      $this->tebakkode_m->setUserProgress($this->user['user_id'], 0);
+      $this->undercovergame_m->setUserProgress($this->user['user_id'], 0);
     }
   }
 
