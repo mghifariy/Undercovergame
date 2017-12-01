@@ -46,8 +46,7 @@ class Undercovergame_m extends CI_Model {
     return $this->db->insert_id();
   }
 
-  function getGame($room)
-  {
+  function getGame($room) {
     $status = $this->db->where('room_id', $room)->get('games')->row_array();
     if(count($status)>0) return true;
     return false;
@@ -55,7 +54,7 @@ class Undercovergame_m extends CI_Model {
 
   function getPlayingGame($room) {
     $status = $this->db->where('playing', 'true')
-    ->where('room_id',$room)
+    ->where('room_id', $room)
     ->get('games')->row_array();
     if(count($status)>0) return true;
     return false;
@@ -77,10 +76,27 @@ class Undercovergame_m extends CI_Model {
   }
 
   // Player
-  function updateCivilian($room_id, $total) {
-    $this->db->where('id', $room_id)
-    ->set('civilian_tot', $total)
-    ->update('games');
+  function checkPlayer($userId, $room_id) {
+    $playing = $this->db->where('user_id', $userId)
+    ->where('room_id', $room_id)
+    ->get('users')->row_array();
+    if(count($player)>0) return true;
+    return false;
+  }
+
+  function setPlayer($userId, $room_id) {
+    $this->db->where('user_id', $userId)
+    ->set('room_id', $room_id)
+    ->update('users');
+
+    return $this->db->affected_rows();
+  }
+
+  function playerStart($userId, $room_id) {
+    $this->db->where('user_id', $userId)
+    ->where('room_id', $room_id)
+    ->set('playing', 'true')
+    ->update('users');
 
     return $this->db->affected_rows();
   }
