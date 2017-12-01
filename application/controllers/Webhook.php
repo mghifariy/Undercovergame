@@ -148,9 +148,13 @@ class Webhook extends CI_Controller {
         break;
 
       case '.leave':
-        $message = 'Terimakasih sudah bermain bersama kami.';
-        $response = $this->bot->replyMessage($replyToken, 
-                                              new TextMessageBuilder($message));
+        if(isset($event['roomId'])){
+          $roomId = $event['roomId']
+          $message = 'Terimakasih sudah bermain bersama kami.';
+          $response = $this->bot->replyMessage($replyToken, 
+                                                new TextMessageBuilder($message));
+          $response = $bot->leaveRoom($roomId);
+        }
         break;
           
       case '.bantuan':
