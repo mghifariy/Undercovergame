@@ -123,7 +123,7 @@ class Webhook extends CI_Controller {
       switch ($userMessage) {
         
         case '.buat':
-          if (!$this->undercovergame_m->getPlayingGame($roomId)) {
+          if (!$this->undercovergame_m->getGame($roomId)) {
             $this->undercovergame_m->setGame($roomId);
             $message = 'Game Berhasil dibuat';
             $response = $this->bot->replyMessage($replyToken, 
@@ -181,6 +181,19 @@ class Webhook extends CI_Controller {
           }
           break;
             
+        case '.buat':
+          if (!$this->undercovergame_m->getPlayingGame($roomId)) {
+            $this->undercovergame_m->setGame($roomId);
+            $message = 'Game Berhasil dibuat';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }else{
+            $message = 'sudah ada game yang dibuat di room ini, silahkan bergabung';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }
+          break;
+
         case '.bantuan':
           $message = 'Game Berhasil dibuat';
           $response = $this->bot->replyMessage($replyToken, 

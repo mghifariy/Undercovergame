@@ -46,9 +46,18 @@ class Undercovergame_m extends CI_Model {
     return $this->db->insert_id();
   }
 
+  function getGame($room)
+  {
+    $this->db->where('room_id', $room)->get('games')->room_array();
+    if(count($status)>0) return true;
+    return false;
+  }
+
   function getPlayingGame($room) {
-    $status = $this->db->where('playing', 'true')->get('games')->row_array();
-    if($status == 'true') return $status;
+    $status = $this->db->where('playing', 'true')
+    ->where('room_id',$room)
+    ->get('games')->row_array();
+    if(count($status)>0) return true;
     return false;
   }
 
