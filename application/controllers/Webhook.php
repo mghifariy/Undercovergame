@@ -142,7 +142,7 @@ class Webhook extends CI_Controller {
         break;
 
       case '.pemain':
-        $message = "Yang udah Join game: \n Hidayaturrahman";
+        $message = 'Yang udah Join game: '.PHP_EOL.' Hidayaturrahman';
         $response = $this->bot->replyMessage($replyToken, 
                                               new TextMessageBuilder($message));
         break;
