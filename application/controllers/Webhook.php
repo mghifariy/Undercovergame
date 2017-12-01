@@ -119,7 +119,7 @@ class Webhook extends CI_Controller {
   private function textMessage($event)
   {
     $userMessage = $event['message']['text'];
-    
+    $replyToken = $event['replyToken'];
     switch ($userMessage) {
       
       case '.buat':
@@ -159,6 +159,7 @@ class Webhook extends CI_Controller {
         break;
     }
 
+    /*
 
     if($this->user['number'] == 0)
     {
@@ -197,6 +198,9 @@ class Webhook extends CI_Controller {
     } else {
       $this->checkAnswer($userMessage, $event['replyToken']);
     }
+
+    */
+
   }
 
   private function stickerMessage($event)
