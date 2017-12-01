@@ -20,14 +20,14 @@ class Undercovergame_m extends CI_Model {
   // Users
   function getUser($userId)
   {
-    $data = $this->db->where('line_id', $userId)->get('users')->row_array();
+    $data = $this->db->where('user_id', $userId)->get('users')->row_array();
     if(count($data) > 0) return $data;
     return false;
   }
  
   function saveUser($profile)
   {
-    $this->db->set('line_id', $profile['userId'])
+    $this->db->set('user_id', $profile['userId'])
       ->set('display_name', $profile['displayName'])
       ->insert('users');
  
@@ -39,8 +39,8 @@ class Undercovergame_m extends CI_Model {
 
   //function isAnswerEqual($number, $answer){}
 
-  //function setUserProgress($line_id, $newNumber){}
+  //function setUserProgress($user_id, $newNumber){}
 
-  //function setScore($line_id, $score){}
+  //function setScore($user_id, $score){}
 
 }
