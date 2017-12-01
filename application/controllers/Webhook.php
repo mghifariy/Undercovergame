@@ -156,7 +156,7 @@ class Webhook extends CI_Controller {
                                                 new TextMessageBuilder($message));
           $response = $this->bot->leaveRoom($roomId);
         }elseif (isset($event['source']['groupId'])) {
-          $groupId = $event['source']['roomId'];
+          $groupId = $event['source']['groupId'];
           $message = 'Terimakasih sudah bermain bersama kami.';
           $response = $this->bot->replyMessage($replyToken, 
                                                 new TextMessageBuilder($message));
