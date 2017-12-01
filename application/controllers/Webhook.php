@@ -67,6 +67,8 @@ class Webhook extends CI_Controller {
         }
  
       } // end of foreach
+      // debuging data
+    file_put_contents('php://stderr', 'Body: '.$body);
     }
 
   } // end of index.php
