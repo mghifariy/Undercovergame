@@ -29,7 +29,7 @@ class Webhook extends CI_Controller {
   public function index()
   {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-      echo "Hello Coders!";
+      echo "Hello dayat!";
       header('HTTP/1.1 400 Only POST method allowed');
       exit;
     }
