@@ -1,5 +1,8 @@
-# KuisKode_Starter
-Kuis Kode LINE Bot App
+# Undercover^^
+Undercover^^ is a LINE Bot game which challenges your imagination
 
-Sample code LINE Bot with PHP
-Check academy at [Dicoding LINE Bot Academy](https://dicoding.id/a/32)
+## Developer
+- mghifariy  
+- dayatura  
+  
+*If you want to help us develop this bot please contact me*

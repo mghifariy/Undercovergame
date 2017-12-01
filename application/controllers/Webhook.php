@@ -95,12 +95,10 @@ class Webhook extends CI_Controller {
     $userMessage = $event['message']['text'];
     if(strtolower($userMessage) == '')
     {
-      // reset score
-      //$this->tebakkode_m->setScore($this->user['user_id'], 0);
-      // update number progress
-      //$this->tebakkode_m->setUserProgress($this->user['user_id'], 1);
-      // send join button
-      $this->sendJoin($event['replyToken'], 0);
+      $message = $userMessage;
+      $textMessageBuilder = new TextMessageBuilder($message);
+      $this->bot->replyMessage($event['replyToken'], $textMessageBuilder);
+
     } else {
       $message = 'Kirim pesan \buat untuk membuat permainan.';
       $textMessageBuilder = new TextMessageBuilder($message);
