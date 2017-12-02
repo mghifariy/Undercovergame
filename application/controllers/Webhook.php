@@ -179,6 +179,7 @@ class Webhook extends CI_Controller {
               if(!$this->undercovergame_m->getPlayinggame($roomId)){
                 $jumlahPemain = $this->undercovergame_m->getPlayer($roomId)->num_rows();
                 $minimalPlayer = 2;
+                
                 if ($jumlahPemain < $minimalPlayer) {
                   $message = 'Jumlah Pemain Minimal 4 orang';
                   $response = $this->bot->replyMessage($replyToken, 
@@ -211,6 +212,7 @@ class Webhook extends CI_Controller {
                   //Random player word
                   echo $this->undercovergame_m->countWord();
                   $indexKata = rand(1,$this->undercovergame_m->countWord());
+                  $indexKata = 1;
                   $word = $this->undercovergame_m->getWord($indexKata)->result();
                   $civilianWord = '';
                   $undercoverWord = '';
