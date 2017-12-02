@@ -111,8 +111,8 @@ class Webhook extends CI_Controller {
       $this->undercovergame_m->saveUser($profile);
     }
   }
-  private function textMessage($event)
-  {
+
+  private function textMessage($event) {
     $userMessage = $event['message']['text'];
     $replyToken = $event['replyToken'];
 
@@ -377,87 +377,5 @@ class Webhook extends CI_Controller {
 
     
 
-  }
-
-  private function stickerMessage($event)
-  {
-    // create sticker message
-    $stickerMessageBuilder = new StickerMessageBuilder(1, 106);
- 
-    // create text message
-    $message = 'Silakan kirim pesan "MULAI" untuk memulai kuis.';
-    $textMessageBuilder = new TextMessageBuilder($message);
- 
-    // merge all message
-    $multiMessageBuilder = new MultiMessageBuilder();
-    $multiMessageBuilder->add($stickerMessageBuilder);
-    $multiMessageBuilder->add($textMessageBuilder);
- 
-    // send message
-    $this->bot->replyMessage($event['replyToken'], $multiMessageBuilder);
-  }
-
-  public function sendQuestion($replyToken, $questionNum=1)
-  {
-    // get question from database
-    $question = $this->undercovergame_m->getQuestion($questionNum);
- 
-    // prepare answer options
-    for($opsi = "a"; $opsi <= "d"; $opsi++) {
-        if(!empty($question['option_'.$opsi]))
-            $options[] = new MessageTemplateActionBuilder($question['option_'.$opsi], $question['option_'.$opsi]);
-    }
- 
-    // prepare button template
-    $buttonTemplate = new ButtonTemplateBuilder($question['number']."/10", $question['text'], $question['image'], $options);
- 
-    // build message
-    $messageBuilder = new TemplateMessageBuilder("Gunakan mobile app untuk melihat soal", $buttonTemplate);
- 
-    // send message
-    $response = $this->bot->replyMessage($replyToken, $messageBuilder);
-  }
-
-  private function checkAnswer($message, $replyToken)
-  {
-    // if answer is true, increment score
-    if($this->undercovergame_m->isAnswerEqual($this->user['number'], $message)){
-      $this->user['score']++;
-      $this->undercovergame_m->setScore($this->user['user_id'], $this->user['score']);
-    }
- 
-    if($this->user['number'] < 10)
-    {
-      // update number progress
-     $this->undercovergame_m->setUserProgress($this->user['user_id'], $this->user['number'] + 1);
- 
-      // send next question
-      $this->sendQuestion($replyToken, $this->user['number'] + 1);
-    }
-    else {
-      // create user score message
-      $message = 'Skormu '. $this->user['score'];
-      $textMessageBuilder1 = new TextMessageBuilder($message);
- 
-      // create sticker message
-      $stickerId = ($this->user['score'] < 8) ? 100 : 114;
-      $stickerMessageBuilder = new StickerMessageBuilder(1, $stickerId);
- 
-      // create play again message
-      $message = ($this->user['score'] < 8) ?
-'Wkwkwk! Nyerah? Ketik "MULAI" untuk bermain lagi!':
-'Great! Mantap bro! Ketik "MULAI" untuk bermain lagi!';
-      $textMessageBuilder2 = new TextMessageBuilder($message);
- 
-      // merge all message
-      $multiMessageBuilder = new MultiMessageBuilder();
-      $multiMessageBuilder->add($textMessageBuilder1);
-      $multiMessageBuilder->add($stickerMessageBuilder);
-      $multiMessageBuilder->add($textMessageBuilder2);
- 
-      // send reply message
-      $this->bot->replyMessage($replyToken, $multiMessageBuilder);
-      $this->undercovergame_m->setUserProgress($this->user['user_id'], 0);
-    }
   }
 }
