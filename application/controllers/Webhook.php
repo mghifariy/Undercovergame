@@ -217,13 +217,13 @@ class Webhook extends CI_Controller {
           {
             
             $pemain = $this->undercovergame_m->getPlayer($roomId);
-            //$player = $pemain->getJSONDecodedBody();
+            $players = $pemain->getJSONDecodedBody();
             $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
 
-            foreach ($pemain as $player) {
+            foreach ($players as $player) {
               $message = $message.PHP_EOL.$player['display_name'];
             }
-            
+
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
             
