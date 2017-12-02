@@ -183,28 +183,75 @@ class Webhook extends CI_Controller {
           {
             if ($this->undercovergame_m->getGame($roomId))
             {
-              $jumlahPemain = $this->undercovergame_m->getPlayer($roomId)->num_rows();
-              $minimalPlayer = 2;
-              if ($jumlahPemain < $minimalPlayer) {
-                $message = 'Jumlah Pemain Minimal 4 orang';
-                $response = $this->bot->replyMessage($replyToken, 
-                                                      new TextMessageBuilder($message));
+              if(!$this->undercovergame_m->getPlayinggame($roomId)){
+                $jumlahPemain = $this->undercovergame_m->getPlayer($roomId)->num_rows();
+                $minimalPlayer = 2;
+                if ($jumlahPemain < $minimalPlayer) {
+                  $message = 'Jumlah Pemain Minimal 4 orang';
+                  $response = $this->bot->replyMessage($replyToken, 
+                                                        new TextMessageBuilder($message));
+                }
+                else 
+                {
+  
+                  //random player role
+                  $jumlahUndercover = rand(1,($jumlahPemain/2)-1);
+                  $jumlahCivilian = $jumlahPemain - $jumlahUndercover;
+  
+                  $this->undercovergame_m->updateUndercoverNumber($roomId,$jumlahUndercover);
+                  $this->undercovergame_m->updateCivilianNumber($roomId,$jumlahCivilian);
+  
+                  foreach ($pemain as $player) 
+                  {
+                    $userId = $player->user_id;
+                    if (rand()%2 == 1 && $jumlahCivilian != 0) {
+                      $this->undercovergame_m->setRole($roomId,$userId,"civilian");
+                      $jumlahCivilian -= 1;
+                    }else {
+                      $this->undercovergame_m->setRole($roomId,$userId,"undercover");
+                    }
+                  }
+  
+                  //Random player word
+                  $word = $this->undercovergame_m->getWord(rand(1,$this->undercovergame_m->countWord()));
+                  $civilianWord = '';
+                  $undercoverWord = '';
+                  if (rand()%2 == 1) {
+                    $civilianWord = $word->word_a;
+                    $undercoverWord = $word->word_b;
+                  }else {
+                    $civilianWord = $word->word_b;
+                    $undercoverWord = $word->word_a;
+                  }
+  
+                  $this->undercovergame_m->setGameWord($roomId,$civilianWord,$undercoverWord);
+                  $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
+                  foreach ($pemain as $player) 
+                  {
+                    if ($pemain->role == 'undercover') 
+                    {
+                      $this->undercovergame_m->setPlayerWord($roomId,'undercover',$undercoverWorld);
+                    }
+                    else
+                    {
+                      $this->undercovergame_m->setPlayerWord($roomId,'civilian',$civilianWorld);
+                    }
+                  }
+  
+                  $this->undercovergame_m->setPlayingGame($roomId,'true');
+  
+                  
+                  $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
+                  $response = $this->bot->replyMessage($replyToken, 
+                                                        new TextMessageBuilder($message));
+                }  
               }
-              else 
+              else
               {
-
-
-
-
-
-
-
-                
-                $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
+                $message = 'Game sudah berjalan, silahkan ikut di game selanjutnya';
                 $response = $this->bot->replyMessage($replyToken, 
                                                       new TextMessageBuilder($message));
               }
-
             }else {
               # code...
               $message = 'Belum ada game yang dibuat. Silahkana buat terlebih dahulu :3';
