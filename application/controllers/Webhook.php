@@ -140,7 +140,7 @@ class Webhook extends CI_Controller {
           $res = $this->bot->getProfile($event['source']['userId']);
           $profile = $res->getJSONDecodedBody();
 
-          if ($this->undercovergame_m->getUser($event['source']['userId'])) 
+          if (isset($profile['displayName'])) 
           {
             if (!$this->undercovergame_m->checkPlayer($event['source']['userId'], $roomId)) 
             {
