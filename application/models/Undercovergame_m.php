@@ -87,9 +87,9 @@ class Undercovergame_m extends CI_Model {
   function setPlayer($userId, $room_id) {
     $this->db->where('user_id', $userId)
     ->set('room_id', $room_id)
-    ->update('players');
+    ->insert('players');
 
-    return $this->db->affected_rows();
+    return $this->db->insert_id();
   }
 
   function playerStart($userId, $room_id) {
