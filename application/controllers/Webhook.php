@@ -7,6 +7,7 @@ use \LINE\LINEBot\MessageBuilder\StickerMessageBuilder;
 use \LINE\LINEBot\MessageBuilder\TemplateMessageBuilder;
 use \LINE\LINEBot\MessageBuilder\TemplateBuilder\ButtonTemplateBuilder;
 use \LINE\LINEBot\TemplateActionBuilder\MessageTemplateActionBuilder;
+use LINE\LINEBot\TemplateActionBuilder\PostbackTemplateActionBuilder;
 use \LINE\LINEBot\MessageBuilder\TemplateBuilder\ConfirmTemplateBuilder;
 use \LINE\LINEBot\Event\MessageEvent\TextMessage;
 
