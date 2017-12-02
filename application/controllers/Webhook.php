@@ -53,7 +53,7 @@ class Webhook extends CI_Controller {
           $roomId = (isset($event['source']['roomId'])) ? $event['source']['roomId'] : $event['source']['groupId'];
           $waktuDiskusi = true;
           $waktuVote = true;
-          if (getPlayingGame($roomId)) 
+          if ($this->undercovergame_m->getPlayingGame($roomId)) 
           {
             if ($waktuDiskusi)
             {
