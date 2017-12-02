@@ -209,7 +209,8 @@ class Webhook extends CI_Controller {
                   }
   
                   //Random player word
-                  $indexKata = rand(1,$this->undercovergame_m->countWord());
+                  echo $this->undercovergame_m->countWord()->num_rows();
+                  $indexKata = rand(1,$this->undercovergame_m->countWord()->num_rows());
                   $word = $this->undercovergame_m->getWord($indexKata)->result();
                   $civilianWord = '';
                   $undercoverWord = '';
@@ -221,7 +222,7 @@ class Webhook extends CI_Controller {
                     $undercoverWord = $word->word_a;
                   }
                   
-                  echo ('jumlah Kata:'.$this->undercovergame_m->countWord());
+                  echo ('jumlah Kata:'.$this->undercovergame_m->countWord()->num_rows());
                   echo ('Index Kata:'.$indexKata);
                   echo ('Index Kata:'.$indexKata.' '.$civilianWord.'='.$word->word_a.' '.$undercoverWord.'='.$word->word_b);
   
