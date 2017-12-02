@@ -208,27 +208,29 @@ class Webhook extends CI_Controller {
                       $jumlahCivilian -= 1;
                     }
                   }
-  
-                  //Random player word
-                  echo $this->undercovergame_m->countWord();
-                  //$indexKata = rand(1,$this->undercovergame_m->countWord());
-                  $indexKata = 1;
-                  $word = $this->undercovergame_m->getWord($indexKata)->result();
-                  echo $word;
-                  $civilianWord = '';
-                  $undercoverWord = '';
-                  if (rand()%2 == 1) {
-                    $civilianWord = $word->word_a;
-                    $undercoverWord = $word->word_b;
-                  }else {
-                    $civilianWord = $word->word_b;
-                    $undercoverWord = $word->word_a;
-                  }
                   
-                  //echo ('jumlah Kata:'.$this->undercovergame_m->countWord());
-                  echo ('Index Kata:'.$indexKata);
-                  echo ('Index Kata:'.$indexKata.' '.$civilianWord.'='.$word->word_a.' '.$undercoverWord.'='.$word->word_b);
-  
+                  // //Random player word
+                  // echo $this->undercovergame_m->countWord();
+                  // //$indexKata = rand(1,$this->undercovergame_m->countWord());
+                  // $indexKata = 1;
+                  // $word = $this->undercovergame_m->getWord($indexKata)->result();
+                  // echo $word;
+                  $civilianWord = 'ayam';
+                  $undercoverWord = 'bebek';
+                  // if (rand()%2 == 1) {
+                  //   $civilianWord = $word->word_a;
+                  //   $undercoverWord = $word->word_b;
+                  // }else {
+                  //   $civilianWord = $word->word_b;
+                  //   $undercoverWord = $word->word_a;
+                  // }
+                  
+                  // //echo ('jumlah Kata:'.$this->undercovergame_m->countWord());
+                  // echo ('Index Kata:'.$indexKata);
+                  // echo ('Index Kata:'.$indexKata.' '.$civilianWord.'='.$word->word_a.' '.$undercoverWord.'='.$word->word_b);
+                  
+
+
                   $this->undercovergame_m->setGameWord($roomId,$civilianWord,$undercoverWord);
                   // $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
                   foreach ($pemain as $player) 
