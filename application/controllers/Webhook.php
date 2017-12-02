@@ -209,7 +209,9 @@ class Webhook extends CI_Controller {
                   }
   
                   //Random player word
-                  $word = $this->undercovergame_m->getWord(rand(1,$this->undercovergame_m->countWord()))->result();
+                  echo $this->undercovergame_m->countWord()->num_rows();
+                  $indexKata = rand(1,$this->undercovergame_m->countWord()->num_rows());
+                  $word = $this->undercovergame_m->getWord($indexKata)->result();
                   $civilianWord = '';
                   $undercoverWord = '';
                   if (rand()%2 == 1) {
@@ -219,7 +221,10 @@ class Webhook extends CI_Controller {
                     $civilianWord = $word->word_b;
                     $undercoverWord = $word->word_a;
                   }
-                  echo $civilianWord.'='.$word->word_a.' '.$undercoverWord.'='.$word->word_b;
+                  
+                  echo ('jumlah Kata:'.$this->undercovergame_m->countWord()->num_rows());
+                  echo ('Index Kata:'.$indexKata);
+                  echo ('Index Kata:'.$indexKata.' '.$civilianWord.'='.$word->word_a.' '.$undercoverWord.'='.$word->word_b);
   
                   $this->undercovergame_m->setGameWord($roomId,$civilianWord,$undercoverWord);
                   // $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
