@@ -33,7 +33,7 @@ class Undercovergame_m extends CI_Model {
 
   // Words
   function getWord($id) {
-    $word = $this->db->select('word_a, word_b')
+    $word = $this->db->select('word_a', 'word_b')
     ->from('words')
     ->where('id', $id)
     ->get();
