@@ -220,7 +220,7 @@ class Webhook extends CI_Controller {
             //$players = $pemain->getJSONDecodedBody();
             $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
 
-            foreach ($players as $player) {
+            foreach ($pemain as $player) {
               $message = $message.PHP_EOL.$player->display_name;
             }
 
