@@ -253,7 +253,7 @@ class Webhook extends CI_Controller {
                   }
                   
 
-                  //$this->undercovergame_m->setPlayingGame($roomId,'true');
+                  $this->undercovergame_m->setPlayingGame($roomId,'true');
   
                   
                   $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
