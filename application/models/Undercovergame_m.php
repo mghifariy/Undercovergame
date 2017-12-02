@@ -33,9 +33,37 @@ class Undercovergame_m extends CI_Model {
 
   // Words
   function getWord($id) {
-    $data = $this->db->where('id', $id)->get('words')->row_array();
-    if(count($data)>0) return $data;
+    $word = $this->db->select('word_a, word_b')
+    ->from('words')
+    ->where('id', $id)
+    ->get();
+    if(count($word->result())>0) return $word;
     return false;
+  }
+
+  function setGameWord($roomId, $civWord, $undWord) {
+    $this->db->set('civilian_word', $civWord)
+    ->set('undercover_word', $undWord)
+    ->update('games');
+
+    return $this->db->affected_rows();
+  }
+
+  function setPlayerWord($role, $word) {
+    $this->db->where('role', $role)
+    ->set('word', $word)
+    ->update('players');
+
+    return $this->db->affected_rows();
+  }
+
+  // Roles
+  function setRole($userId, $role) {
+    $this->db->where('user_id', $userId)
+    ->set('role', $role)
+    ->update('players');
+
+    return $this->db->affected_rows();
   }
 
   // Games
@@ -111,8 +139,8 @@ class Undercovergame_m extends CI_Model {
   }
 
   function getPlayer($roomId) {
-    $player = $this->db->select("*")
-    ->from("players")
+    $player = $this->db->select('*')
+    ->from('players')
     ->where('room_id', $roomId)
     ->get();
     if(count($player->result())>0) return $player;

@@ -86,7 +86,7 @@ class Webhook extends CI_Controller {
  
       // create welcome message
       $message  = "Halo, " . $profile['displayName'] . "!\n";
-      $message .= "Silahkan invite saya ke group atau multichat untuk mulai bermain Undercover^^";
+      $message .= "Silahkan invite saya ke grup atau multichat untuk mulai bermain Undercover^^";
       $textMessageBuilder = new TextMessageBuilder($message);
  
       // create sticker message
@@ -114,28 +114,25 @@ class Webhook extends CI_Controller {
       
       switch ($userMessage) {
         case '.buat':
-
           $res = $this->bot->getProfile($event['source']['userId']);
           $profile = $res->getJSONDecodedBody();
 
-          if (isset($profile['displayName'])) 
-          {
-
+          if (isset($profile['displayName'])) {
             if (!$this->undercovergame_m->getGame($roomId)) {
               $this->undercovergame_m->setGame($roomId);
-              $message = 'Game Berhasil dibuat';
-              $response = $this->bot->replyMessage($replyToken, 
-                                                    new TextMessageBuilder($message));
-            }else{
-              $message = 'sudah ada game yang dibuat di room ini, silahkan bergabung';
+              $message = 'Game berhasil dibuat! Silahkan bergabung.';
               $response = $this->bot->replyMessage($replyToken, 
                                                     new TextMessageBuilder($message));
             }
-
-          }else
-          {
-            $message = 'Yang belum add ga akan diwaro';
+            else {
+              $message = 'Game sudah dibuat sebelumnya! Silahkan bergabung.';
               $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
+            }
+          }
+          else {
+            $message = $profile['displayName'] . ' tidak bisa menggunakan perintah bot karena belum menambahkan sebagai teman.';
+            $response = $this->bot->replyMessage($replyToken, 
                                                     new TextMessageBuilder($message));
           }
           break;
