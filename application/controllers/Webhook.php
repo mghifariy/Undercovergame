@@ -247,11 +247,11 @@ class Webhook extends CI_Controller {
 
 
 
-          $this->undercovergame_m->resetPlayer($roomId)
-          $this->undercovergame_m->deleteGame($roomId);
-          $message = 'Permainan dibatalkan';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
+            $this->undercovergame_m->resetPlayer($roomId);
+            $this->undercovergame_m->deleteGame($roomId);
+            $message = 'Permainan dibatalkan';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
           
 
 
