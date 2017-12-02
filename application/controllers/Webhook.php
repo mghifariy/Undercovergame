@@ -210,9 +210,9 @@ class Webhook extends CI_Controller {
                     }
                   }
                   
-                  // //Random player word
-                  //$jumlahKata = $this->undercovergame_m->countWord()->num_rows();
-                  //$indexKata = rand(1,$jumlahKata);
+                  //Random player word
+                  $jumlahKata = $this->undercovergame_m->countWord()->num_rows();
+                  $indexKata = rand(1,$jumlahKata);
                   $indexKata = 5;
                   $word = $this->undercovergame_m->getWord($indexKata)->result();
                   $kata1='';
@@ -260,7 +260,7 @@ class Webhook extends CI_Controller {
                   }
                   
 
-                  //$this->undercovergame_m->setPlayingGame($roomId,'true');
+                  $this->undercovergame_m->setPlayingGame($roomId,'true');
                   
                   //push message to player
                   $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
