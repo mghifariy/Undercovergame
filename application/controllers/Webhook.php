@@ -199,11 +199,12 @@ class Webhook extends CI_Controller {
                   foreach ($pemain as $player) 
                   {
                     $userId = $player->user_id;
-                    if (rand()%2 == 1 && $jumlahCivilian != 0) {
+                    if ((rand()%2 == 1 && $jumlahCivilian != 0) || $jumlahUndercover == 0) {
                       $this->undercovergame_m->setRole($roomId,$userId,"civilian");
                       $jumlahCivilian -= 1;
                     }else {
                       $this->undercovergame_m->setRole($roomId,$userId,"undercover");
+                      $jumlahCivilian -= 1;
                     }
                   }
   
