@@ -39,54 +39,54 @@ class Undercovergame_m extends CI_Model {
   }
 
   // Games
-  function setGame($room) {
-    $this->db->set('room_id', $room)
+  function setGame($roomId) {
+    $this->db->set('room_id', $roomId)
     ->insert('games');
 
     return $this->db->insert_id();
   }
 
-  function getGame($room) {
-    $status = $this->db->where('room_id', $room)->get('games')->row_array();
+  function getGame($roomId) {
+    $status = $this->db->where('room_id', $roomId)->get('games')->row_array();
     if(count($status)>0) return true;
     return false;
   }
 
-  function getPlayingGame($room) {
+  function getPlayingGame($roomId) {
     $status = $this->db->where('playing', 'true')
-    ->where('room_id', $room)
+    ->where('room_id', $roomId)
     ->get('games')->row_array();
     if(count($status)>0) return true;
     return false;
   }
 
-  function setPlayingGame($room, $status) {
-    $this->db->where('room_id', $room)
+  function setPlayingGame($roomId, $status) {
+    $this->db->where('room_id', $roomId)
     ->set('playing', $status)
     ->insert('games');
 
     return $this->db->insert_id();
   }
 
-  function deleteGame($room) {
-    $this->db->where('room_id', $room)
+  function deleteGame($roomId) {
+    $this->db->where('room_id', $roomId)
     ->delete('games');
 
     return $this->db->affected_rows();
   }
 
   // Player
-  function checkPlayer($userId, $room_id) {
+  function checkPlayer($userId, $roomId) {
     $playing = $this->db->where('user_id', $userId)
-    ->where('room_id', $room_id)
+    ->where('room_id', $roomId)
     ->get('players')->row_array();
     if(count($playing)>0) return true;
     return false;
   }
 
-  function setPlayer($profile, $room_id) {
+  function setPlayer($profile, $roomId) {
     $this->db
-    ->set('room_id', $room_id)
+    ->set('room_id', $roomId)
     ->set('user_id', $profile['userId'])
     ->set('display_name', $profile['displayName'])
     ->insert('players');
@@ -94,9 +94,16 @@ class Undercovergame_m extends CI_Model {
     return $this->db->insert_id();
   }
 
-  function playerStart($userId, $room_id) {
+  function resetPlayer($roomId) {
+    $this->db->where('room_id', $roomId)
+    ->delete('players');
+    
+    return $this->db->affected_rows();
+  }
+
+  function playerStart($userId, $roomId) {
     $this->db->where('user_id', $userId)
-    ->where('room_id', $room_id)
+    ->where('room_id', $roomId)
     ->set('playing', 'true')
     ->update('players');
 
