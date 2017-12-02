@@ -190,17 +190,38 @@ class Webhook extends CI_Controller {
 
           if (isset($profile['displayName'])) 
           {
+            if ($this->undercovergame_m->getGame($roomId))
+            {
+              $jumlahPemain = $this->undercovergame_m->getPlayer($roomId)->num_rows();
+              
+              if ($jumlahPemain < $minimalPlayer) {
+                $message = 'Jumlah Pemain Minimal 4 orang';
+                $response = $this->bot->replyMessage($replyToken, 
+                                                      new TextMessageBuilder($message));
+              }
+              else 
+              {
 
 
 
-            $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
 
 
 
 
-          }else
+                
+                $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
+                $response = $this->bot->replyMessage($replyToken, 
+                                                      new TextMessageBuilder($message));
+              }
+
+            }else {
+              # code...
+              $message = 'Belum ada game yang dibuat. Silahkana buat terlebih dahulu :3';
+                $response = $this->bot->replyMessage($replyToken, 
+                                                      new TextMessageBuilder($message));
+            }
+          }
+          else
           {
             $message = 'Yang belum add ga akan diwaro';
             $response = $this->bot->replyMessage($replyToken, 
@@ -216,7 +237,7 @@ class Webhook extends CI_Controller {
           if (isset($profile['displayName'])) 
           {
             
-            $pemain = $this->undercovergame_m->getPlayer($roomId);
+            $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
             //$players = $pemain->getJSONDecodedBody();
             $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
 
@@ -226,12 +247,8 @@ class Webhook extends CI_Controller {
 
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
-            
-
-
-
-
-          }else
+          }
+          else
           {
             $message = 'Yang belum add ga akan diwaro';
             $response = $this->bot->replyMessage($replyToken, 
