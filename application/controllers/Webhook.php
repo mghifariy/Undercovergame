@@ -19,6 +19,7 @@ class Webhook extends CI_Controller {
   function __construct() {
     parent::__construct();
     $this->load->model('undercovergame_m');
+
     // create bot object
     $httpClient = new CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
     $this->bot  = new LINEBot($httpClient, ['channelSecret' => $_ENV['CHANNEL_SECRET']]);
@@ -60,16 +61,13 @@ class Webhook extends CI_Controller {
             }
           }
         }
-
       }
     }
     
-    // debuging data
-    file_put_contents('php://stderr', 'Body: '.$body);
-  } // end of index.php
+    file_put_contents('php://stderr', 'Body: '.$body); // debuging data
+  }
 
-  private function start_game()
-  {
+  private function start_game() {
     # code...
     // prepare button template
     $buttonTemplate = new ButtonTemplateBuilder("Kuis Dayatura", "Silahkan klik START untuk memulai permaian", "http://broadway-performance-systems.com/images/quick_start-1.jpg", ["MULAI","Ga Mau"]);
@@ -80,16 +78,15 @@ class Webhook extends CI_Controller {
     return $messageBuilder;
   }
 
-  private function followCallback($event)
-  {
+  private function followCallback($event) {
     $res = $this->bot->getProfile($event['source']['userId']);
-    if ($res->isSucceeded())
-    {
+    
+    if ($res->isSucceeded()) {
       $profile = $res->getJSONDecodedBody();
  
       // create welcome message
-      $message  = "Salam kenal, " . $profile['displayName'] . "!\n";
-      $message .= "Silakan kirim pesan \"MULAI\" untuk memulai kuis.";
+      $message  = "Halo, " . $profile['displayName'] . "!\n";
+      $message .= "Silahkan invite saya ke group atau multichat untuk mulai bermain Undercover^^";
       $textMessageBuilder = new TextMessageBuilder($message);
  
       // create sticker message
@@ -103,7 +100,6 @@ class Webhook extends CI_Controller {
       // send reply message
       $this->bot->replyMessage($event['replyToken'], $multiMessageBuilder);
       
-
       // save user data
       $this->undercovergame_m->saveUser($profile);
     }
@@ -113,12 +109,10 @@ class Webhook extends CI_Controller {
     $userMessage = $event['message']['text'];
     $replyToken = $event['replyToken'];
 
-    if(isset($event['source']['roomId']) || isset($event['source']['groupId'])) 
-    {
+    if(isset($event['source']['roomId']) || isset($event['source']['groupId'])) {
       $roomId = (isset($event['source']['roomId'])) ? $event['source']['roomId'] : $event['source']['groupId'];
       
       switch ($userMessage) {
-        
         case '.buat':
 
           $res = $this->bot->getProfile($event['source']['userId']);
