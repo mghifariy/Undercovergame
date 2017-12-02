@@ -61,8 +61,8 @@ class Undercovergame_m extends CI_Model {
   function countWord() {
     $word = $this->db->select('*')
     ->from('words')
-    ->get();
-    return $word->num_rows();
+    ->count();
+    return $word;
   }
 
   // Roles
