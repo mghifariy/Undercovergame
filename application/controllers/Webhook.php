@@ -256,16 +256,23 @@ class Webhook extends CI_Controller {
                     }
 
                     $this->undercovergame_m->setPlayerPlaying($roomId,$player->user_id,'true');
-
                   }
                   
 
                   //$this->undercovergame_m->setPlayingGame($roomId,'true');
-  
                   
+                  //push message to player
+                  $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
+                  foreach ($pemain as $player) {
+                    $message = 'KATA kamu adalah '.$player->word;
+                    $this->bot->pushMessage($player->user_id, new TextMessageBuilder($message));
+                  }
+
+
                   $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
                   $response = $this->bot->replyMessage($replyToken, 
                                                         new TextMessageBuilder($message));
+
                 }  
               }
               else
