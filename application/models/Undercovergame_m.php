@@ -32,10 +32,11 @@ class Undercovergame_m extends CI_Model {
   }
 
   // Words
-  function getWord($id) {
-    $word = $this->db->select('*')
+  function getWord($index) {
+    $word = $this->db
     ->from('words')
-    ->where('id', $id)
+    ->where('id', $index)
+    ->select('*')
     ->get();
     if(count($word->result())>0) return $word;
     return false;
