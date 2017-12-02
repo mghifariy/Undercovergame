@@ -72,8 +72,10 @@ class Webhook extends CI_Controller {
               $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
               
               $playerButtons = [];
+              $i = 0;
               foreach ($pemain as $player) {
-                array_push($playerButtons,"new PostbackTemplateActionBuilder(".$pemain->display_name.", 'action=buy&itemid=123')");
+                $playerButtons[i] = new PostbackTemplateActionBuilder($pemain->display_name, 'action=buy&itemid=123');
+                $i++;
               }
 
 
