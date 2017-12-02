@@ -220,7 +220,7 @@ class Webhook extends CI_Controller {
           {
             
             $pemain = $this->undercovergame_m->getPlayer($roomId);
-            $player = $res->getJSONDecodedBody();
+            $player = $pemain->getJSONDecodedBody();
             
 
             $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
