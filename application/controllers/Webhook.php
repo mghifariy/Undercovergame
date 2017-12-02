@@ -218,6 +218,7 @@ class Webhook extends CI_Controller {
                     $civilianWord = $word->word_b;
                     $undercoverWord = $word->word_a;
                   }
+                  echo $civilianWord.'='.$word->word_a.' '.$undercoverWord.'='.$word->word_b;
   
                   $this->undercovergame_m->setGameWord($roomId,$civilianWord,$undercoverWord);
                   // $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
