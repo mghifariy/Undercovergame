@@ -15,37 +15,34 @@ class Webhook extends CI_Controller {
   private $events;
   private $signature;
   private $user;
-  function __construct()
-  {
+  
+  function __construct() {
     parent::__construct();
     $this->load->model('undercovergame_m');
     // create bot object
     $httpClient = new CurlHTTPClient($_ENV['CHANNEL_ACCESS_TOKEN']);
     $this->bot  = new LINEBot($httpClient, ['channelSecret' => $_ENV['CHANNEL_SECRET']]);
   }
-  public function index()
-  {
+
+  public function index() {
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-      echo "Hello Coders!";
+      echo "Oops! What are you looking for?";
       header('HTTP/1.1 400 Only POST method allowed');
       exit;
     }
+
     // get request
     $body = file_get_contents('php://input');
     $this->signature = isset($_SERVER['HTTP_X_LINE_SIGNATURE']) ? $_SERVER['HTTP_X_LINE_SIGNATURE'] : "-";
     $this->events = json_decode($body, true);
+
     // log every event requests
     $this->undercovergame_m->log_events($this->signature, $body);
 
     file_put_contents('php://stderr', 'Body: '.$body);
 
-    if(is_array($this->events['events'])){
-      foreach ($this->events['events'] as $event){
-        // your code here
-
-        // skip group and room event
-        //if(! isset($event['source']['userId'])) continue;
- 
+    if(is_array($this->events['events'])) {
+      foreach ($this->events['events'] as $event) {
         // get user data from database
         $this->user = $this->undercovergame_m->getUser($event['source']['userId']);
  
@@ -53,7 +50,7 @@ class Webhook extends CI_Controller {
         if(!$this->user) $this->followCallback($event);
         else {
           // respond event
-          if($event['type'] == 'message'){
+          if($event['type'] == 'message') {
             if(method_exists($this, $event['message']['type'].'Message')){
               $this->{$event['message']['type'].'Message'}($event);
             }

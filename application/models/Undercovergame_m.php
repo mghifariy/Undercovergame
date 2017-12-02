@@ -111,9 +111,11 @@ class Undercovergame_m extends CI_Model {
   }
 
   function getPlayer($roomId) {
-    $player = $this->db->where('room_id', $roomId)
-    ->get('players')->row_array();
-    if(count($player)>0) return $player;
+    $player = $this->db->select("*")
+    ->from("players")
+    ->where('room_id', $roomId)
+    ->get();
+    if(count($player)>0) return $player->result();
     return false;
   }
 }
