@@ -142,7 +142,7 @@ class Webhook extends CI_Controller {
 
           if ($this->undercovergame_m->getUser($event['source']['userId'])) 
           {
-            if (!$this->undercovergame_m->checkPlayer($profile['userId'], $roomId)) 
+            if (!$this->undercovergame_m->checkPlayer($event['source']['userId']), $roomId)) 
             {
               $response = $this->undercovergame_m->setPlayer($profile['userId'],$roomId);
               $message =  $profile['displayName'].' berhasil masuk ke permainan';
