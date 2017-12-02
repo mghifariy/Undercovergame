@@ -227,7 +227,7 @@ class Webhook extends CI_Controller {
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
             $response = $player;
-            echo($response);
+            echo (json_encode($response,JSON_PRETTY_PRINT));
 
 
 
