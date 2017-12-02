@@ -73,7 +73,7 @@ class Webhook extends CI_Controller {
               
               $playerButtons = [];
               foreach ($pemain as $player) {
-                array_push($playerButtons,new PostbackTemplateActionBuilder($pemain->display_name, 'action=buy&itemid=123'));
+                array_push($playerButtons,"new PostbackTemplateActionBuilder(".$pemain->display_name.", 'action=buy&itemid=123')");
               }
 
 
