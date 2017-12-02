@@ -243,14 +243,14 @@ class Webhook extends CI_Controller {
                   // $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
                   foreach ($pemain as $player) 
                   {
-                    if ($player->role == 'undercover') 
-                    {
-                      $this->undercovergame_m->setPlayerWord($roomId,'undercover',$undercoverWord);
-                      echo $civilianWord.' '.$undercoverWord.PHP_EOL;
-                    }
-                    elseif ($player->role == 'civilian')
+                    if ($player->role == 'civilian') 
                     {
                       $this->undercovergame_m->setPlayerWord($roomId,'civilian',$civilianWord);
+                      echo $civilianWord.' '.$undercoverWord.PHP_EOL;
+                    }
+                    else
+                    {
+                      $this->undercovergame_m->setPlayerWord($roomId,'undercover',$undercoverWord);
                       echo $civilianWord.' '.$undercoverWord.PHP_EOL;
                     }
 
