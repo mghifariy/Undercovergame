@@ -59,9 +59,7 @@ class Undercovergame_m extends CI_Model {
   }
 
   function countWord() {
-    $word = $this->db->select('*')
-    ->from('words')
-    ->count();
+    $word = $this->db->get('words');
     return $word;
   }
 
