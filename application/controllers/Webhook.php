@@ -209,7 +209,7 @@ class Webhook extends CI_Controller {
                   }
   
                   //Random player word
-                  $word = $this->undercovergame_m->getWord(rand(1,$this->undercovergame_m->countWord()));
+                  $word = $this->undercovergame_m->getWord(rand(1,$this->undercovergame_m->countWord()))->result();
                   $civilianWord = '';
                   $undercoverWord = '';
                   if (rand()%2 == 1) {
