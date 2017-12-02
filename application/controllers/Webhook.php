@@ -187,7 +187,7 @@ class Webhook extends CI_Controller {
             if ($this->undercovergame_m->getGame($roomId))
             {
               $jumlahPemain = $this->undercovergame_m->getPlayer($roomId)->num_rows();
-              
+              $minimalPlayer = 1;
               if ($jumlahPemain < $minimalPlayer) {
                 $message = 'Jumlah Pemain Minimal 4 orang';
                 $response = $this->bot->replyMessage($replyToken, 
