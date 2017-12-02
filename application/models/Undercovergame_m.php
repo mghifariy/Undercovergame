@@ -61,7 +61,7 @@ class Undercovergame_m extends CI_Model {
   
   function countWord() {
     $word = $this->db->select('*')
-    ->from('word')
+    ->from('words')
     ->get();
     if(count($word->result())>0) return $word;
     return false;
