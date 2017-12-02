@@ -171,10 +171,10 @@ class Undercovergame_m extends CI_Model {
     return $this->db->affected_rows();
   }
 
-  function playerStart($userId, $roomId) {
-    $this->db->where('user_id', $userId)
-    ->where('room_id', $roomId)
-    ->set('playing', 'true')
+  function setPlayerPlaying($roomId, $userId, $status) {
+    $this->db->where('room_id', $roomId)
+    ->where('user_id', $userId)
+    ->set('playing', $status)
     ->update('players');
 
     return $this->db->affected_rows();
