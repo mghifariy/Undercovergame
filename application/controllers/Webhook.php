@@ -190,6 +190,7 @@ class Webhook extends CI_Controller {
   
                   //random player role
                   $jumlahUndercover = rand(1,($jumlahPemain/2));
+                  echo $jumlahUndercover;
                   $jumlahCivilian = $jumlahPemain - $jumlahUndercover;
   
                   $this->undercovergame_m->updateUndercoverNumber($roomId,$jumlahUndercover);
@@ -234,11 +235,12 @@ class Webhook extends CI_Controller {
                   // //echo ('jumlah Kata:'.$this->undercovergame_m->countWord());
                   // echo ('Index Kata:'.$indexKata);
                   // echo ('Index Kata:'.$indexKata.' '.$civilianWord.'='.$word->word_a.' '.$undercoverWord.'='.$word->word_b);
-                  
+                  $c = $civilianWord;
+                  $u = $undercoverWord;
 
 
                   $this->undercovergame_m->setGameWord($roomId,$civilianWord,$undercoverWord);
-                  echo $civilianWord.' '.$undercoverWord.PHP_EOL;
+                  //echo $civilianWord.' '.$undercoverWord.PHP_EOL;
 
                   // $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
                   foreach ($pemain as $player) 
@@ -246,12 +248,12 @@ class Webhook extends CI_Controller {
                     if ($player->role == 'civilian') 
                     {
                       echo $civilianWord.' '.$undercoverWord.PHP_EOL;
-                      $this->undercovergame_m->setPlayerWord($roomId,'civilian',$civilianWord);
+                      $this->undercovergame_m->setPlayerWord($roomId,'civilian',$c);
                     }
                     else
                     {
                       echo $civilianWord.' '.$undercoverWord.PHP_EOL;
-                      $this->undercovergame_m->setPlayerWord($roomId,'undercover',$undercoverWord);
+                      $this->undercovergame_m->setPlayerWord($roomId,'undercover',$u);
                     }
 
                     $this->undercovergame_m->setPlayerPlaying($roomId,$player->user_id,'true');
