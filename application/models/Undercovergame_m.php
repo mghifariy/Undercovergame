@@ -49,17 +49,26 @@ class Undercovergame_m extends CI_Model {
     return $this->db->affected_rows();
   }
 
-  function setPlayerWord($role, $word) {
-    $this->db->where('role', $role)
+  function setPlayerWord($roomId, $role, $word) {
+    $this->db->where('room_id', $roomId)
+    ->where('role', $role)
     ->set('word', $word)
     ->update('players');
 
     return $this->db->affected_rows();
   }
 
+  function countWord() {
+    $word = $this->db->select('*')
+    ->from('words')
+    ->get();
+    return count($word->num_rows())
+  }
+
   // Roles
-  function setRole($userId, $role) {
-    $this->db->where('user_id', $userId)
+  function setRole($roomId, $userId, $role) {
+    $this->db->where('room_id', $roomId)
+    ->where('user_id', $userId)
     ->set('role', $role)
     ->update('players');
 
@@ -91,14 +100,48 @@ class Undercovergame_m extends CI_Model {
   function setPlayingGame($roomId, $status) {
     $this->db->where('room_id', $roomId)
     ->set('playing', $status)
-    ->insert('games');
+    ->update('games');
 
-    return $this->db->insert_id();
+    return $this->db->affected_rows();
   }
 
   function deleteGame($roomId) {
     $this->db->where('room_id', $roomId)
     ->delete('games');
+
+    return $this->db->affected_rows();
+  }
+
+  function getCivilianNumber($roomId, $civilian) {
+    $civilian = $this->db->select('civilian_tot')
+    ->from('games')
+    ->where('room_id', $roomId)
+    ->get();
+    if(count($civilian->result())>0) return $civilian;
+    return false;
+  }
+
+  function updateCivilianNumber($roomId, $civilian) {
+    $this->db->where('room_id', $roomId)
+    ->set('civilian_tot', $civilian)
+    ->update('games');
+
+    return $this->db->affected_rows();
+  }
+
+  function getUndercoverNumber($roomId, $undercover) {
+    $undercover = $this->db->select('undercover_tot')
+    ->from('games')
+    ->where('room_id', $roomId)
+    ->get();
+    if(count($undercover->result())>0) return $undercover;
+    return false;
+  }
+
+  function updateUndercoverNumber($roomId, $undercover) {
+    $this->db->where('room_id', $roomId)
+    ->set('undercover_tot', $undercover)
+    ->update('games');
 
     return $this->db->affected_rows();
   }
@@ -113,8 +156,7 @@ class Undercovergame_m extends CI_Model {
   }
 
   function setPlayer($profile, $roomId) {
-    $this->db
-    ->set('room_id', $roomId)
+    $this->db->set('room_id', $roomId)
     ->set('user_id', $profile['userId'])
     ->set('display_name', $profile['displayName'])
     ->insert('players');
