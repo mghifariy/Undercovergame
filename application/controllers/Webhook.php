@@ -231,7 +231,7 @@ class Webhook extends CI_Controller {
                     {
                       $this->undercovergame_m->setPlayerWord($roomId,'civilian',$civilianWord);
                     }
-                    $this->setPlayerPlaying($roomId,$pemain->user_id,'true');
+                    $this->undercovergame_m->setPlayerPlaying($roomId,$player->user_id,'true');
                   }
                   
 
