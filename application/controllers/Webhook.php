@@ -47,6 +47,60 @@ class Webhook extends CI_Controller {
         // get user data from database
         $this->user = $this->undercovergame_m->getUser($event['source']['userId']);
  
+        // game Running
+        if(isset($event['source']['roomId']) || isset($event['source']['groupId'])) 
+        {
+          $roomId = (isset($event['source']['roomId'])) ? $event['source']['roomId'] : $event['source']['groupId'];
+          $waktuDiskusi = true;
+          $waktuVote = true;
+          if (getPlayingGame($roomId)) 
+          {
+            if ($waktuDiskusi)
+            {
+              $message = "Dipersilahkan kepada pemain untuk menyebutkan petunjuk mengenai kata masing-masing dalam 2 menit.";
+              $this->bot->pushMessage($roomId, new TextMessageBuilder($message));
+            }
+            
+            if ($waktuVote) 
+            {
+              $message = "Waktunya vote, silahkan cek personal chat masing-masing !";
+              $this->bot->pushMessage($roomId, new TextMessageBuilder($message));
+
+              $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
+              //$players = $pemain->getJSONDecodedBody();
+              $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
+  
+              foreach ($pemain as $player) {
+                $message = $message.PHP_EOL.$player->display_name;
+              }
+
+
+
+
+              foreach ($pemain as $player) {
+                $imageUrl = UrlBuilder::buildUrl($this->req, ['static', 'buttons', '1040.jpg']);
+                $buttonTemplateBuilder = new ButtonTemplateBuilder(
+                    'My button sample',
+                    'Hello my button',
+                    $imageUrl,
+                    [
+                        new UriTemplateActionBuilder('Go to line.me', 'https://line.me'),
+                        new PostbackTemplateActionBuilder('Buy', 'action=buy&itemid=123'),
+                        new PostbackTemplateActionBuilder('Add to cart', 'action=add&itemid=123'),
+                        new MessageTemplateActionBuilder('Say message', 'hello hello'),
+                    ]
+                );
+                $templateMessage = new TemplateMessageBuilder('Button alt text', $buttonTemplateBuilder);
+                //$this->bot->replyMessage($replyToken, $templateMessage);
+                $response = $this->bot->pushMessage($player->user_id, $templateMessage);
+              }
+
+
+
+            }
+          }
+        }  
+
         // if user not registered
         if(!$this->user) $this->followCallback($event);
         else {
@@ -213,7 +267,6 @@ class Webhook extends CI_Controller {
                   //Random player word
                   $jumlahKata = $this->undercovergame_m->countWord()->num_rows();
                   $indexKata = rand(1,$jumlahKata);
-                  //$indexKata = 5;
                   $word = $this->undercovergame_m->getWord($indexKata)->result();
                   $kata1='';
                   $kata2='';
@@ -231,20 +284,13 @@ class Webhook extends CI_Controller {
                     $civilianWord = $kata2;
                     $undercoverWord = $kata1;
                   }
-                  
-                  // //echo ('jumlah Kata:'.$this->undercovergame_m->countWord());
-                  // echo ('Index Kata:'.$indexKata);
-                  // echo ('Index Kata:'.$indexKata.' '.$civilianWord.'='.$word->word_a.' '.$undercoverWord.'='.$word->word_b);
-                  $c = $civilianWord;
-                  $u = $undercoverWord;
 
-
+                  //set word
                   $this->undercovergame_m->setGameWord($roomId,$civilianWord,$undercoverWord);
                   $this->undercovergame_m->setPlayerWord($roomId,'civilian',$civilianWord);
                   $this->undercovergame_m->setPlayerWord($roomId,'undercover',$undercoverWord);
                   
-                  
-
+                  //start game
                   $this->undercovergame_m->setPlayingGame($roomId,'true');
                   
                   //push message to player
