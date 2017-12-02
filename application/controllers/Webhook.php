@@ -288,29 +288,29 @@ class Webhook extends CI_Controller {
           if (isset($profile['displayName'])) 
           {
 
-
+            
             if(isset($event['source']['roomId'])){
               
               $roomId = $event['source']['roomId'];
               $message = 'Terimakasih sudah bermain bersama kami.';
               $response = $this->bot->replyMessage($replyToken, 
-                                                    new TextMessageBuilder($message));
-              $this->undercovergame_m->deleteGame($roomId);
-              $response = $this->bot->leaveRoom($roomId);
+              new TextMessageBuilder($message));
+              
             }elseif (isset($event['source']['groupId'])) {
               $groupId = $event['source']['groupId'];
               $message = 'Terimakasih sudah bermain bersama kami.';
               $response = $this->bot->replyMessage($replyToken, 
-                                                    new TextMessageBuilder($message));
-              $this->undercovergame_m->deleteGame($roomId);
-              $response = $this->bot->leaveGroup($groupId);
+              new TextMessageBuilder($message));
+              
             }else{
               $message = 'Gila lu, mana tega gw ninggalin lu sendiri !!!';
               $response = $this->bot->replyMessage($replyToken, 
-                                                    new TextMessageBuilder($message));
+              new TextMessageBuilder($message));
             }
-
-
+            $this->undercovergame_m->resetPlayer($roomId);
+            $this->undercovergame_m->deleteGame($roomId);
+            $this->bot->leaveGroup($groupId);
+            
           }else
           {
             $message = 'Yang belum add ga akan diwaro';
