@@ -244,15 +244,18 @@ class Webhook extends CI_Controller {
 
           if (isset($profile['displayName'])) 
           {
-
-
-
-            $this->undercovergame_m->resetPlayer($roomId);
-            $this->undercovergame_m->deleteGame($roomId);
-            $message = 'Permainan dibatalkan';
-            $response = $this->bot->replyMessage($replyToken, 
+            if ($this->undercovergame_m->getGame($roomId)) {
+              $this->undercovergame_m->resetPlayer($roomId);
+              $this->undercovergame_m->deleteGame($roomId);
+              $message = 'Permainan dibatalkan';
+              $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
-          
+            }
+            else{
+              $message = 'Tidak ada permainan di grup ini';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+            }
 
 
 
