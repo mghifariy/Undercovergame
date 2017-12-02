@@ -70,9 +70,10 @@ class Webhook extends CI_Controller {
               $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
               //$players = $pemain->getJSONDecodedBody();
               $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
-  
+              
+              $playerButtons = [];
               foreach ($pemain as $player) {
-                $message = $message.PHP_EOL.$player->display_name;
+                array_push($playerButtons,new PostbackTemplateActionBuilder($pemain->display_name, 'action=buy&itemid=123'));
               }
 
 
@@ -84,10 +85,11 @@ class Webhook extends CI_Controller {
                     'My button sample',
                     'Hello my button',
                     $imageUrl,
-                    [
-                        new PostbackTemplateActionBuilder('Buy', 'action=buy&itemid=123'),
-                        new MessageTemplateActionBuilder('Say message', 'hello hello'),
-                    ]
+                    $playerButtons
+                    // [
+                    //     new PostbackTemplateActionBuilder('Buy', 'action=buy&itemid=123'),
+                    //     new MessageTemplateActionBuilder('Say message', 'hello hello'),
+                    // ]
                 );
                 $templateMessage = new TemplateMessageBuilder('Button alt text', $buttonTemplateBuilder);
                 //$this->bot->replyMessage($replyToken, $templateMessage);
