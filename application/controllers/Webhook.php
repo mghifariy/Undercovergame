@@ -214,7 +214,11 @@ class Webhook extends CI_Controller {
                   // //$indexKata = rand(1,$this->undercovergame_m->countWord());
                   $indexKata = 1;
                   $word = $this->undercovergame_m->getWord($indexKata)->result();
-                  echo json_encode($word)[0];
+                  foreach ($word as $kata) {
+                    echo $kata->word_a;
+                    echo $kata->word_b;
+                  }
+                  echo json_encode($word);
                   
                   $civilianWord = 'ayam';
                   $undercoverWord = 'bebek';
