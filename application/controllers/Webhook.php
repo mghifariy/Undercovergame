@@ -145,7 +145,7 @@ class Webhook extends CI_Controller {
             {
               if (!$this->undercovergame_m->checkPlayer($event['source']['userId'], $roomId)) 
               {
-                $response = $this->undercovergame_m->setPlayer($profile['userId'],$roomId);
+                $response = $this->undercovergame_m->setPlayer($profile,$roomId);
                 $message =  $profile['displayName'].' berhasil masuk ke permainan';
                 $response = $this->bot->replyMessage($replyToken, 
                                                       new TextMessageBuilder($message));
