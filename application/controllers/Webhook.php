@@ -219,7 +219,7 @@ class Webhook extends CI_Controller {
           if (isset($profile['displayName'])) 
           {
             
-            $pemain = $this->bot->getPemain($roomId);
+            $pemain = $this->undercovergame_m->getPlayer($roomId);
             $player = $res->getJSONDecodedBody();
             
 
