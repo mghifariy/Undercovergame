@@ -136,30 +136,39 @@ class Webhook extends CI_Controller {
           break;
         
         case '.join':
-
-          $res = $this->bot->getProfile($event['source']['userId']);
-          $profile = $res->getJSONDecodedBody();
-
-          if ($this->undercovergame_m->getUser($event['source']['userId'])) 
+          if ($this->undercovergame_m->getGame($roomId))
           {
-            if (!$this->undercovergame_m->checkPlayer($playerId, $roomId)) 
+            $res = $this->bot->getProfile($event['source']['userId']);
+            $profile = $res->getJSONDecodedBody();
+
+            if (isset($profile['displayName'])) 
             {
-              $response = $this->undercovergame_m->setPlayer($profile['userId'],$roomId);
-              $message =  $profile['displayName'].' berhasil masuk ke permainan';
-              $response = $this->bot->replyMessage($replyToken, 
-                                                    new TextMessageBuilder($message));
+              if (!$this->undercovergame_m->checkPlayer($event['source']['userId'], $roomId)) 
+              {
+                $response = $this->undercovergame_m->setPlayer($profile['userId'],$roomId);
+                $message =  $profile['displayName'].' berhasil masuk ke permainan';
+                $response = $this->bot->replyMessage($replyToken, 
+                                                      new TextMessageBuilder($message));
+              }else
+              {
+                $message = $profile['display_name'].' sudah masuk permainan';
+                $response = $this->bot->replyMessage($replyToken, 
+                                                      new TextMessageBuilder($message));
+              }
             }else
             {
-              $message = $profile['display_name'].' sudah masuk permainan';
+              $message = 'Yang belum add ga akan diwaro';
               $response = $this->bot->replyMessage($replyToken, 
                                                     new TextMessageBuilder($message));
             }
+
           }else
           {
-            $message = $profile['display_name'].' , silahkan add bot untuk ikut bermain';
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
+            $message = 'Belum ada game yang dibuat. Silahkana buat terlebih dahulu :3';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
           }
+          
           
           break;
         
