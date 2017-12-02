@@ -75,7 +75,7 @@ class Undercovergame_m extends CI_Model {
     return $this->db->affected_rows();
   }
 
-  // Player
+  // Players
   function checkPlayer($userId, $roomId) {
     $playing = $this->db->where('user_id', $userId)
     ->where('room_id', $roomId)
@@ -97,7 +97,7 @@ class Undercovergame_m extends CI_Model {
   function resetPlayer($roomId) {
     $this->db->where('room_id', $roomId)
     ->delete('players');
-    
+
     return $this->db->affected_rows();
   }
 
@@ -108,5 +108,12 @@ class Undercovergame_m extends CI_Model {
     ->update('players');
 
     return $this->db->affected_rows();
+  }
+
+  function getPlayer($roomId) {
+    $player = $this->db->where('room_id', $roomId)
+    ->get('players')->row_array();
+    if(count($status)>0) return true;
+    return false;
   }
 }
