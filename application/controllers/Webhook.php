@@ -241,23 +241,24 @@ class Webhook extends CI_Controller {
 
                   $this->undercovergame_m->setGameWord($roomId,$civilianWord,$undercoverWord);
                   //echo $civilianWord.' '.$undercoverWord.PHP_EOL;
-
+                  $this->undercovergame_m->setPlayerWord($roomId,'civilian',$civilianWord);
+                  $this->undercovergame_m->setPlayerWord($roomId,'undercover',$undercoverWord);
                   // $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
-                  foreach ($pemain as $player) 
-                  {
-                    if ($player->role == 'civilian') 
-                    {
-                      echo $civilianWord.' '.$undercoverWord.PHP_EOL;
-                      $this->undercovergame_m->setPlayerWord($roomId,'civilian',$c);
-                    }
-                    else
-                    {
-                      echo $civilianWord.' '.$undercoverWord.PHP_EOL;
-                      $this->undercovergame_m->setPlayerWord($roomId,'undercover',$u);
-                    }
+                  // foreach ($pemain as $player) 
+                  // {
+                  //   if ($player->role == 'civilian') 
+                  //   {
+                  //     echo $civilianWord.' '.$undercoverWord.PHP_EOL;
+                  //     $this->undercovergame_m->setPlayerWord($roomId,'civilian',$civilianWord);
+                  //   }
+                  //   else
+                  //   {
+                  //     echo $civilianWord.' '.$undercoverWord.PHP_EOL;
+                  //     $this->undercovergame_m->setPlayerWord($roomId,'undercover',$undercoverWord);
+                  //   }
 
-                    $this->undercovergame_m->setPlayerPlaying($roomId,$player->user_id,'true');
-                  }
+                  //   $this->undercovergame_m->setPlayerPlaying($roomId,$player->user_id,'true');
+                  // }
                   
 
                   $this->undercovergame_m->setPlayingGame($roomId,'true');
