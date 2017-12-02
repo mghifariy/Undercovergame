@@ -214,7 +214,7 @@ class Webhook extends CI_Controller {
                   // //$indexKata = rand(1,$this->undercovergame_m->countWord());
                   $indexKata = 1;
                   $word = $this->undercovergame_m->getWord($indexKata)->result();
-                  echo $word->word_a;
+                  echo $word;
                   
                   $civilianWord = 'ayam';
                   $undercoverWord = 'bebek';
@@ -248,7 +248,7 @@ class Webhook extends CI_Controller {
                   }
                   
 
-                  $this->undercovergame_m->setPlayingGame($roomId,'true');
+                  //$this->undercovergame_m->setPlayingGame($roomId,'true');
   
                   
                   $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
