@@ -223,7 +223,7 @@ class Webhook extends CI_Controller {
                   $civilianWord = '';
                   $undercoverWord = '';
                   
-                  if (rand()%2 == 1) {
+                  if (rand(10)%2 == 1) {
                     $civilianWord = $kata1;
                     $undercoverWord = $kata2;
                   }else {
