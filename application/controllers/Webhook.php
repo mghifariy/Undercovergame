@@ -143,7 +143,7 @@ class Webhook extends CI_Controller {
 
           }else
           {
-            $message = 'Belum ada game yang dibuat. Silahkana buat terlebih dahulu :3';
+            $message = 'Yang belum add ga akan diwaro';
               $response = $this->bot->replyMessage($replyToken, 
                                                     new TextMessageBuilder($message));
           }
