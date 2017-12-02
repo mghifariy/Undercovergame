@@ -181,17 +181,38 @@ class Webhook extends CI_Controller {
 
           if (isset($profile['displayName'])) 
           {
+            if ($this->undercovergame_m->getGame($roomId))
+            {
+              $jumlahPemain = $this->undercovergame_m->getPlayer($roomId)->num_rows();
+              $minimalPlayer = 2;
+              if ($jumlahPemain < $minimalPlayer) {
+                $message = 'Jumlah Pemain Minimal 4 orang';
+                $response = $this->bot->replyMessage($replyToken, 
+                                                      new TextMessageBuilder($message));
+              }
+              else 
+              {
 
 
 
-            $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
 
 
 
 
-          }else
+                
+                $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
+                $response = $this->bot->replyMessage($replyToken, 
+                                                      new TextMessageBuilder($message));
+              }
+
+            }else {
+              # code...
+              $message = 'Belum ada game yang dibuat. Silahkana buat terlebih dahulu :3';
+                $response = $this->bot->replyMessage($replyToken, 
+                                                      new TextMessageBuilder($message));
+            }
+          }
+          else
           {
             $message = 'Yang belum add ga akan diwaro';
             $response = $this->bot->replyMessage($replyToken, 
@@ -207,7 +228,7 @@ class Webhook extends CI_Controller {
           if (isset($profile['displayName'])) 
           {
             
-            $pemain = $this->undercovergame_m->getPlayer($roomId);
+            $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
             //$players = $pemain->getJSONDecodedBody();
             $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
 
@@ -217,12 +238,8 @@ class Webhook extends CI_Controller {
 
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
-            
-
-
-
-
-          }else
+          }
+          else
           {
             $message = 'Yang belum add ga akan diwaro';
             $response = $this->bot->replyMessage($replyToken, 
@@ -268,29 +285,29 @@ class Webhook extends CI_Controller {
           if (isset($profile['displayName'])) 
           {
 
-
+            
             if(isset($event['source']['roomId'])){
               
               $roomId = $event['source']['roomId'];
               $message = 'Terimakasih sudah bermain bersama kami.';
               $response = $this->bot->replyMessage($replyToken, 
-                                                    new TextMessageBuilder($message));
-              $this->undercovergame_m->deleteGame($roomId);
-              $response = $this->bot->leaveRoom($roomId);
+              new TextMessageBuilder($message));
+              
             }elseif (isset($event['source']['groupId'])) {
               $groupId = $event['source']['groupId'];
               $message = 'Terimakasih sudah bermain bersama kami.';
               $response = $this->bot->replyMessage($replyToken, 
-                                                    new TextMessageBuilder($message));
-              $this->undercovergame_m->deleteGame($roomId);
-              $response = $this->bot->leaveGroup($groupId);
+              new TextMessageBuilder($message));
+              
             }else{
               $message = 'Gila lu, mana tega gw ninggalin lu sendiri !!!';
               $response = $this->bot->replyMessage($replyToken, 
-                                                    new TextMessageBuilder($message));
+              new TextMessageBuilder($message));
             }
-
-
+            $this->undercovergame_m->resetPlayer($roomId);
+            $this->undercovergame_m->deleteGame($roomId);
+            $this->bot->leaveGroup($groupId);
+            
           }else
           {
             $message = 'Yang belum add ga akan diwaro';
