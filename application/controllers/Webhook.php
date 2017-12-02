@@ -123,15 +123,29 @@ class Webhook extends CI_Controller {
       switch ($userMessage) {
         
         case '.buat':
-          if (!$this->undercovergame_m->getGame($roomId)) {
-            $this->undercovergame_m->setGame($roomId);
-            $message = 'Game Berhasil dibuat';
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
-          }else{
-            $message = 'sudah ada game yang dibuat di room ini, silahkan bergabung';
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
+
+          $res = $this->bot->getProfile($event['source']['userId']);
+          $profile = $res->getJSONDecodedBody();
+
+          if (isset($profile['displayName'])) 
+          {
+
+            if (!$this->undercovergame_m->getGame($roomId)) {
+              $this->undercovergame_m->setGame($roomId);
+              $message = 'Game Berhasil dibuat';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
+            }else{
+              $message = 'sudah ada game yang dibuat di room ini, silahkan bergabung';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
+            }
+
+          }else
+          {
+            $message = 'Belum ada game yang dibuat. Silahkana buat terlebih dahulu :3';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
           }
           break;
         
@@ -174,49 +188,131 @@ class Webhook extends CI_Controller {
         
         case '.mulai':
 
+          $res = $this->bot->getProfile($event['source']['userId']);
+          $profile = $res->getJSONDecodedBody();
 
-          $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
-          break;
+          if (isset($profile['displayName'])) 
+          {
 
-        case '.pemain':
-          $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
-          break;
 
-        case '.batal':
-          $this->undercovergame_m->deleteGame($roomId);
-          $message = 'Permainan dibatalkan';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
-          break;
 
-        case '.leave':
-          if(isset($event['source']['roomId'])){
-            
-            $roomId = $event['source']['roomId'];
-            $message = 'Terimakasih sudah bermain bersama kami.';
+            $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
-            $this->undercovergame_m->deleteGame($roomId);
-            $response = $this->bot->leaveRoom($roomId);
-          }elseif (isset($event['source']['groupId'])) {
-            $groupId = $event['source']['groupId'];
-            $message = 'Terimakasih sudah bermain bersama kami.';
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
-            $this->undercovergame_m->deleteGame($roomId);
-            $response = $this->bot->leaveGroup($groupId);
-          }else{
-            $message = 'Gila lu, mana tega gw ninggalin lu sendiri !!!';
+
+
+
+
+          }else
+          {
+            $message = 'Yang belum add ga akan diwaro';
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
           }
           break;
+
+        case '.pemain':
+
+          $res = $this->bot->getProfile($event['source']['userId']);
+          $profile = $res->getJSONDecodedBody();
+
+          if (isset($profile['displayName'])) 
+          {
+
+
+
+          $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
+          $response = $this->bot->replyMessage($replyToken, 
+                                                new TextMessageBuilder($message));
+          
+
+
+
+
+          }else
+          {
+            $message = 'Yang belum add ga akan diwaro';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }
+          break;
+
+        case '.batal':
+
+          $res = $this->bot->getProfile($event['source']['userId']);
+          $profile = $res->getJSONDecodedBody();
+
+          if (isset($profile['displayName'])) 
+          {
+
+
+
+          $this->undercovergame_m->resetPlayer($roomId)
+          $this->undercovergame_m->deleteGame($roomId);
+          $message = 'Permainan dibatalkan';
+          $response = $this->bot->replyMessage($replyToken, 
+                                                new TextMessageBuilder($message));
+          
+
+
+
+          }else
+          {
+            $message = 'Yang belum add ga akan diwaro';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }
+          break;
+
+        case '.leave':
+
+          $res = $this->bot->getProfile($event['source']['userId']);
+          $profile = $res->getJSONDecodedBody();
+
+          if (isset($profile['displayName'])) 
+          {
+
+
+            if(isset($event['source']['roomId'])){
+              
+              $roomId = $event['source']['roomId'];
+              $message = 'Terimakasih sudah bermain bersama kami.';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
+              $this->undercovergame_m->deleteGame($roomId);
+              $response = $this->bot->leaveRoom($roomId);
+            }elseif (isset($event['source']['groupId'])) {
+              $groupId = $event['source']['groupId'];
+              $message = 'Terimakasih sudah bermain bersama kami.';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
+              $this->undercovergame_m->deleteGame($roomId);
+              $response = $this->bot->leaveGroup($groupId);
+            }else{
+              $message = 'Gila lu, mana tega gw ninggalin lu sendiri !!!';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
+            }
+
+
+          }else
+          {
+            $message = 'Yang belum add ga akan diwaro';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }
+
+          break;
             
         case '.buat':
+
+          $res = $this->bot->getProfile($event['source']['userId']);
+          $profile = $res->getJSONDecodedBody();
+
+          if (isset($profile['displayName'])) 
+          {
+
+
           if (!$this->undercovergame_m->getPlayingGame($roomId)) {
             $this->undercovergame_m->setGame($roomId);
             $message = 'Game Berhasil dibuat';
@@ -227,12 +323,38 @@ class Webhook extends CI_Controller {
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
           }
+          
+
+
+
+
+          }else
+          {
+            $message = 'Yang belum add ga akan diwaro';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }
           break;
 
         case '.bantuan':
-          $message = 'Game Berhasil dibuat';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
+
+          $res = $this->bot->getProfile($event['source']['userId']);
+          $profile = $res->getJSONDecodedBody();
+
+          if (isset($profile['displayName'])) 
+          {
+
+            $message = 'Game Berhasil dibuat';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+            
+
+          }else
+          {
+            $message = 'Yang belum add ga akan diwaro';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+          }
           break;
 
         default:
@@ -242,7 +364,7 @@ class Webhook extends CI_Controller {
     }
     else
     {
-      $message = 'Silahkan invite bot ke grup untuk memulai permaianan';
+      $message = 'Perintah hanya bisa dilakukan di grup';
       $response = $this->bot->replyMessage($replyToken, 
                                             new TextMessageBuilder($message));
     }
