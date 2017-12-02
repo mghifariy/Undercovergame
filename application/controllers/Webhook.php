@@ -218,13 +218,15 @@ class Webhook extends CI_Controller {
 
           if (isset($profile['displayName'])) 
           {
+            
+            $pemain = $this->bot->getPemain($roomId);
+            $player = $res->getJSONDecodedBody();
+            
 
-
-
-          $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
-          $response = $this->bot->replyMessage($replyToken, 
-                                                new TextMessageBuilder($message));
-          
+            $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
+            $response = $this->bot->replyMessage($replyToken, 
+                                                  new TextMessageBuilder($message));
+            $response = $player;
 
 
 
