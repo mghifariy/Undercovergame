@@ -503,9 +503,9 @@ class Webhook extends CI_Controller {
       
       $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
       foreach ($pemain as $player) {
-        if ($player->playing==true) {
+        if ($player->playing=='t') {
           $jumlahPemain++;
-          if ($player->voted==true) {
+          if ($player->voted=='t') {
             $jumlahVote++;
           }
         }
@@ -526,9 +526,9 @@ class Webhook extends CI_Controller {
 
       $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
       foreach ($pemain as $player) {
-        if ($player->playing==true) {
+        if ($player->playing=='t') {
           $jumlahPemain++;
-          if ($player->voted==true) {
+          if ($player->voted=='t') {
             $jumlahVote++;
           }
         }
