@@ -200,4 +200,12 @@ class Undercovergame_m extends CI_Model {
     if(count($player->result())>0) return $player;
     return false;
   }
+
+  function vote($userId, $roomId, $voteNum)
+  {
+    $this->db->where('room_id', $roomId)
+    ->where('user_id', $userId)
+    ->set('vote_num', $voteNum)
+    ->update('players');
+  }
 }

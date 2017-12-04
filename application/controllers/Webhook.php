@@ -467,16 +467,20 @@ class Webhook extends CI_Controller {
     
     $votedUserId = $event['postback']['data'];
     $votedUserGroupId = null;
+    $votedUserNum = 1;
     $replyToken = $event['replyToken'];
 
 
     $pemain = $this->undercovergame_m->getPlayerById($votedUserId)->result();
     foreach ($pemain as $player) {
       $votedUserGroupId = $player->room_id;
+      $votedUserNum += $player->vote_num;
     }
 
+    $this->undercover_m->vote($votedUserId, $votedUserGroupId, $votedUserNum);
 
-    $message = 'Vote anda berhasil dilakukan untuk '.$votedUserId.'. Pada grup '.$votedUserGroupId;
+
+    $message = 'Vote anda berhasil dilakukan untuk '.$votedUserId.'. Pada grup '.$votedUserGroupId.' menjadi '.$votedUserNum;
     $response = $this->bot->replyMessage($replyToken, 
                                           new TextMessageBuilder($message));
 
