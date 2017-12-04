@@ -624,8 +624,8 @@ class Webhook extends CI_Controller {
         //                                       new TextMessageBuilder($message));
         
         // JANGAN LUPA NYALAIN
-        $this->undercovergame_m->resetPlayer($roomId);
-        $this->undercovergame_m->deleteGame($roomId);
+        $this->undercovergame_m->resetPlayer($userGroupId);
+        $this->undercovergame_m->deleteGame($userGroupId);
 
       }
 
