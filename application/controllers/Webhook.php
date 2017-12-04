@@ -424,16 +424,17 @@ class Webhook extends CI_Controller {
         case '.bantuan':
 
 
-            $message = 'Perintah yang dapat digunakan'.PHP_EOL;
-            $message .= '.buat = Membuat game'.PHP_EOL;
-            $message .= '.join = Bergabung dalam permaian'.PHP_EOL;
-            $message .= '.mulai = Memulai permaian'.PHP_EOL;
-            $message .= '.pemain = Memunculkan nama permain'.PHP_EOL;
-            $message .= '.batal = Keluar dari permainan'.PHP_EOL;
-            $message .= '.leave = Mengeluarkan bot dari ruangan'.PHP_EOL;
-            $message .= '.bantuan = Menampilkan perintah dasar'.PHP_EOL;
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
+          $message = 'Perintah yang dapat digunakan'.PHP_EOL;
+          $message .= '.buat = Membuat game'.PHP_EOL;
+          $message .= '.join = Bergabung dalam permaian'.PHP_EOL;
+          $message .= '.mulai = Memulai permaian'.PHP_EOL;
+          $message .= '.pemain = Memunculkan nama permain'.PHP_EOL;
+          $message .= '.batal = Keluar dari permainan'.PHP_EOL;
+          $message .= '.leave = Mengeluarkan bot dari ruangan'.PHP_EOL;
+          $message .= '.bantuan = Menampilkan perintah dasar'.PHP_EOL.PHP_EOL;
+          $message .= 'Silahkan add untuk menggunakan perintah'.PHP_EOL;
+          $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
 
           break;
 
