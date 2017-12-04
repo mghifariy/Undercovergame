@@ -509,7 +509,7 @@ class Webhook extends CI_Controller {
             $jumlahVote++;
           }
         }
-        $status .= $player->voted.$player->display_name.$player->playing.PHP_EOL.$jumlahPemain.$jumlahUndercover;
+        $status .= $player->voted.$player->display_name.$player->playing.PHP_EOL.$jumlahPemain.$jumlahVote;
       }
 
       // //DEBUG
