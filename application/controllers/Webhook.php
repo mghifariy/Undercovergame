@@ -638,4 +638,30 @@ class Webhook extends CI_Controller {
 
   }
 
+  private function joinCallback($event) {
+    $replayToken = $event['replyToken'];
+
+    // create welcome message
+    $message  = "Halo, " . 'semuanya' . "!\n";
+    $message .= "Terimakasih sudah mengundang saya ke grup ini\n";
+    $message .= "Silahkan add saya untuk mulai bermain Undercover^^ \n\n";
+    $message .= "Untuk melihat daftar perintah, silahkan ketik .bantuan";
+    $textMessageBuilder = new TextMessageBuilder($message);
+
+    // create sticker message
+    $stickerMessageBuilder = new StickerMessageBuilder(1, 2);
+  
+    // merge all message
+    $multiMessageBuilder = new MultiMessageBuilder();
+    $multiMessageBuilder->add($textMessageBuilder);
+    $multiMessageBuilder->add($stickerMessageBuilder);
+
+    // send reply message
+    $this->bot->replyMessage($event['replyToken'], $multiMessageBuilder);
+    
+    // save user data
+    $this->undercovergame_m->saveUser($profile);
+    
+  }
+  
 }
