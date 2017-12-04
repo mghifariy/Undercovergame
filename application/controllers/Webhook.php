@@ -144,7 +144,8 @@ class Webhook extends CI_Controller {
             $res = $this->bot->getProfile($event['source']['userId']);
             $profile = $res->getJSONDecodedBody();
 
-            if(isset($profile['displayName'])) {
+            if(isset($profile['displayName'])) 
+            {
               if(!$this->undercovergame_m->checkPlayer($event['source']['userId'], $roomId)) {
                 $response = $this->undercovergame_m->setPlayer($profile,$roomId);
                 $message =  $profile['displayName'] . ' berhasil bergabung.';
@@ -422,11 +423,6 @@ class Webhook extends CI_Controller {
 
         case '.bantuan':
 
-          $res = $this->bot->getProfile($event['source']['userId']);
-          $profile = $res->getJSONDecodedBody();
-
-          if(isset($profile['displayName'])) 
-          {
 
             $message = 'Perintah yang dapat digunakan'.PHP_EOL;
             $message .= '.buat = Membuat game'.PHP_EOL;
@@ -438,25 +434,12 @@ class Webhook extends CI_Controller {
             $message .= '.bantuan = Menampilkan perintah dasar'.PHP_EOL;
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
-            
 
-          }else
-          {
-            $message = 'Yang belum add ga akan diwaro';
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
-          }
           break;
 
         default:
           break;
       }
-    }
-    elseif($playerPlayingStatus)
-    {
-      $message = 'anda sedang tergabung dalam permainan';
-      $response = $this->bot->replyMessage($replyToken, 
-                                            new TextMessageBuilder($message));
     }
     else
     {
