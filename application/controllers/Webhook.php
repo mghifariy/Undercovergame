@@ -504,6 +504,7 @@ class Webhook extends CI_Controller {
         $allVoted = false;
       }
     }
+    echo $allVoted;
                                           
     
     if ($allVoted) 
