@@ -484,8 +484,8 @@ class Webhook extends CI_Controller {
       $voted = $player->voted;
     }
     
-    if(!$voted)
-    {
+    // if(!$voted)
+    // {
 
       //get data yang divote
       $pemainVoted = $this->undercovergame_m->getPlayerById($votedUserId)->result();
@@ -643,6 +643,6 @@ class Webhook extends CI_Controller {
       
     }
 
-  }
+  // }
 
 }
