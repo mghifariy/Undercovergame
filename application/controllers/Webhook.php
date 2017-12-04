@@ -501,14 +501,20 @@ class Webhook extends CI_Controller {
       
       
       $status = '';
-      $allVoted = true;
+      $jumlahPemain = 0;
+      $jumlahVote = 0;
+
       $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
       foreach ($pemain as $player) {
-        if (!$player->voted && $player->playing) {
-          $allVoted = false;
+        if ($player->playing) {
+          $jumlahPemain++;
+          if ($player->voted) {
+            $jumlahVote++;
+          }
         }
         $status .= $player->voted.$player->display_name.$player->playing.PHP_EOL;
       }
+
       // //DEBUG
       echo PHP_EOL.$status;
       
@@ -520,7 +526,7 @@ class Webhook extends CI_Controller {
                                             new TextMessageBuilder($message));
       
                                             
-      if ($allVoted) 
+      if ($jumlahVote == $jumlahPemain) 
       {
         $gamePlaying = $this->undercovergame_m->getPlayingGame($userGroupId);
         
