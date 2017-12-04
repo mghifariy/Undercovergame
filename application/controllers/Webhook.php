@@ -269,6 +269,7 @@ class Webhook extends CI_Controller {
                   }
 
                   foreach ($pemain as $player) {
+                    $this->undercovergame_m->setPlayerPlaying($roomId,$player->user_id,'true');
                     $imageUrl = 'https://cdn.dribbble.com/users/881160/screenshots/2152292/undercover-icon.png';
                     $buttonTemplateBuilder = new ButtonTemplateBuilder(
                         $judl,
