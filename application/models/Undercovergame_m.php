@@ -208,4 +208,12 @@ class Undercovergame_m extends CI_Model {
     ->set('vote_num', $voteNum)
     ->update('players');
   }
+
+  function votedStatus($userId, $roomId, $voted)
+  {
+    $this->db->where('room_id', $roomId)
+    ->where('user_id', $userId)
+    ->set('voted', $voted)
+    ->update('players');
+  }
 }

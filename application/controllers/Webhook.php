@@ -464,13 +464,14 @@ class Webhook extends CI_Controller {
 
   private function postbackCallback($event)
   {    
-    
+    $userId = $event['source']['userId'];
+    $userGroupId = null;
     $votedUserId = $event['postback']['data'];
     $votedUserGroupId = null;
     $votedUserNum = 1;
     $replyToken = $event['replyToken'];
 
-
+    //get data yang divote
     $pemain = $this->undercovergame_m->getPlayerById($votedUserId)->result();
     foreach ($pemain as $player) {
       $votedUserGroupId = $player->room_id;
@@ -478,6 +479,13 @@ class Webhook extends CI_Controller {
     }
 
     $this->undercovergame_m->vote($votedUserId, $votedUserGroupId, $votedUserNum);
+    
+    //get data yang mem vote
+    $pemain = $this->undercovergame_m->getPlayerById($userId)->result();
+    foreach ($pemain as $player) {
+      $userGroupId = $player->room_id;
+    }
+    $this->undercovergame_m->votedStatus($userId, $userGroupId, 'true');
 
 
     $message = 'Vote anda berhasil dilakukan untuk '.$votedUserId.'. Pada grup '.$votedUserGroupId.' menjadi '.$votedUserNum;
