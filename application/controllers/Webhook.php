@@ -370,16 +370,27 @@ class Webhook extends CI_Controller {
           if(isset($profile['displayName'])) 
           {
             
-            $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
-            //$players = $pemain->getJSONDecodedBody();
-            $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
+            //sudah ada game
+            if(!$this->undercovergame_m->getGame($roomId)) {
+              
+              $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
+              //$players = $pemain->getJSONDecodedBody();
+              $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
+  
+              foreach ($pemain as $player) {
+                $message = $message.PHP_EOL.$player->display_name;
+              }
+  
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
 
-            foreach ($pemain as $player) {
-              $message = $message.PHP_EOL.$player->display_name;
+            }
+            else {
+              $message = 'Belum ada game yang dibuat, silahkan buat terlebih dahulu.';
+              $response = $this->bot->replyMessage($replyToken, 
+                                                    new TextMessageBuilder($message));
             }
 
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
           }
           else
           {
@@ -459,37 +470,7 @@ class Webhook extends CI_Controller {
 
           break;
             
-        case '.buat':
-
-          $res = $this->bot->getProfile($event['source']['userId']);
-          $profile = $res->getJSONDecodedBody();
-
-          if(isset($profile['displayName'])) 
-          {
-
-
-          if(!$this->undercovergame_m->getPlayingGame($roomId)) {
-            $this->undercovergame_m->setGame($roomId);
-            $message = 'Game Berhasil dibuat';
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
-          }else{
-            $message = 'sudah ada game yang dibuat di room ini, silahkan bergabung';
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
-          }
-          
-
-
-
-
-          }else
-          {
-            $message = 'Yang belum add ga akan diwaro';
-            $response = $this->bot->replyMessage($replyToken, 
-                                                  new TextMessageBuilder($message));
-          }
-          break;
+        
 
         case '.bantuan':
 
@@ -499,7 +480,14 @@ class Webhook extends CI_Controller {
           if(isset($profile['displayName'])) 
           {
 
-            $message = 'Game Berhasil dibuat';
+            $message = 'Perintah yang dapat digunakan'.PHP_EOL;
+            $message .= '.buat = Membuat game'.PHP_EOL;
+            $message .= '.join = Bergabung dalam permaian'.PHP_EOL;
+            $message .= '.mulai = Memulai permaian'.PHP_EOL;
+            $message .= '.pemain = Memunculkan nama permain'.PHP_EOL;
+            $message .= '.batal = Keluar dari permainan'.PHP_EOL;
+            $message .= '.leave = Mengeluarkan bot dari ruangan'.PHP_EOL;
+            $message .= '.bantuan = Menampilkan perintah dasar'.PHP_EOL;
             $response = $this->bot->replyMessage($replyToken, 
                                                   new TextMessageBuilder($message));
             
@@ -513,13 +501,14 @@ class Webhook extends CI_Controller {
           break;
 
         default:
-
           break;
       }
     }
     elseif($playerPlayingStatus)
     {
-
+      $message = 'anda sedang tergabung dalam permainan';
+      $response = $this->bot->replyMessage($replyToken, 
+                                            new TextMessageBuilder($message));
     }
     else
     {
