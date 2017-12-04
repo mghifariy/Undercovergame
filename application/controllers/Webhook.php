@@ -586,7 +586,8 @@ class Webhook extends CI_Controller {
             # code...
             $response = $this->bot->pushMessage($player->user_id, $templateMessage);
           }
-          echo PHP_EOL.$player->display_name;
+          //DEBUG
+          echo PHP_EOL.$player->display_name.' telah dikirimi vote baru';
         }
 
 
@@ -605,6 +606,8 @@ class Webhook extends CI_Controller {
           if ($player->role == $pemenang) {
             $message = $message.PHP_EOL.$player->display_name;
           }
+          //DEBUG
+          echo PHP_EOL.$player->display_name.' ada di list pemain';
         }
 
         echo PHP_EOL.$message;
