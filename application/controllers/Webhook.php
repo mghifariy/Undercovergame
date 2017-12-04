@@ -262,7 +262,7 @@ class Webhook extends CI_Controller {
                   $playerButtons = [];
                   $i = 0;
                   foreach ($pemain as $player) {
-                    $playerButtons[$i] = new PostbackTemplateActionBuilder($player->display_name, [$player->user_id,$player->group_id]);
+                    $playerButtons[$i] = new PostbackTemplateActionBuilder($player->display_name, $player->user_id);
                     $i++;
                   }
 
@@ -467,8 +467,7 @@ class Webhook extends CI_Controller {
 
   private function postbackCallback($event)
   {    
-    $votedUserId = $event['postback']['data'][0];
-    $votedGropuId = $event['postback']['data'][1];
+    $votedUserId = $event['postback']['data'];
     $replyToken = $event['replyToken'];
 
     $message = 'Vote anda berhasil dilakukan untuk '.$votedUserId.' '.$votedUserId;
