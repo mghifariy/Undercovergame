@@ -556,7 +556,7 @@ class Webhook extends CI_Controller {
         $multiMessageBuilder->add( new TextMessageBuilder($message));
         $multiMessageBuilder->add( new TextMessageBuilder($message2));
         
-        $response = $this->bot->pushMessage($userGroupId, $templateMessage);
+        $response = $this->bot->pushMessage($userGroupId, $multiMessageBuilder);
 
         ///// kirim balik ulang vote untuk player yang masih playing 
         // $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result(); //ubah menjadi get active user____________
@@ -618,7 +618,7 @@ class Webhook extends CI_Controller {
         $multiMessageBuilder->add( new TextMessageBuilder($message));
         $multiMessageBuilder->add( new TextMessageBuilder($message2));
         
-        $response = $this->bot->pushMessage($userGroupId, $templateMessage);
+        $response = $this->bot->pushMessage($userGroupId, $multiMessageBuilder);
 
         // $response = $this->bot->pushMessage($userGroupId, 
         //                                       new TextMessageBuilder($message));
