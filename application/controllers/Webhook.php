@@ -499,24 +499,27 @@ class Webhook extends CI_Controller {
       //ubah status vote jadi true
       $this->undercovergame_m->votedStatus($userId, $userGroupId, 'true');
       
-
-      $message = 'Vote anda berhasil dilakukan';
-      // echo $message;
-      $response = $this->bot->replyMessage($replyToken, 
-                                            new TextMessageBuilder($message));
       
-
+      $status = '';
       $allVoted = true;
       $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
       foreach ($pemain as $player) {
         if (!$player->voted && $player->playing) {
           $allVoted = false;
         }
+        $status .= $player->voted.$player->display_name.$player->playing.PHP_EOL;
       }
       // //DEBUG
-      // echo PHP_EOL.$allVoted;
-                                            
+      echo PHP_EOL.$status;
       
+
+      $message = 'Vote anda berhasil dilakukan';
+      $message .= PHP_EOL.$status;
+      // echo $message;
+      $response = $this->bot->replyMessage($replyToken, 
+                                            new TextMessageBuilder($message));
+      
+                                            
       if ($allVoted) 
       {
         $gamePlaying = $this->undercovergame_m->getPlayingGame($userGroupId);
@@ -620,7 +623,7 @@ class Webhook extends CI_Controller {
             // echo PHP_EOL.$player->display_name.' ada di list pemain sebagai '.$player->role;
           }
 
-          echo PHP_EOL.$message;
+          //echo PHP_EOL.$message;
 
           $multiMessageBuilder = new MultiMessageBuilder();
           $message2 = '[PERMAINAN BERAKHIR]'.PHP_EOL.PHP_EOL;
