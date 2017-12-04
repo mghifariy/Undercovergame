@@ -494,26 +494,9 @@ class Webhook extends CI_Controller {
         $votedUserNum += $player->vote_num;
       }
       
-      $status = '';
-      $jumlahPemain = 0;
-      $jumlahVote = 0;
       //lakukan vote
       $this->undercovergame_m->vote($votedUserId, $votedUserGroupId, $votedUserNum);
       
-      
-      $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
-      foreach ($pemain as $player) {
-        if ($player->playing=='t') {
-          $jumlahPemain++;
-          if ($player->voted=='t') {
-            $jumlahVote++;
-          }
-        }
-        $status .= $player->voted.$player->display_name.$player->playing.PHP_EOL.$jumlahPemain.$jumlahVote;
-      }
-
-      // //DEBUG
-      echo PHP_EOL.$status;
 
       $status = '';
       $jumlahPemain = 0;
@@ -661,8 +644,8 @@ class Webhook extends CI_Controller {
           //                                       new TextMessageBuilder($message));
           
           // JANGAN LUPA NYALAIN
-          // $this->undercovergame_m->resetPlayer($userGroupId);
-          // $this->undercovergame_m->deleteGame($userGroupId);
+          $this->undercovergame_m->resetPlayer($userGroupId);
+          $this->undercovergame_m->deleteGame($userGroupId);
 
         }
 
