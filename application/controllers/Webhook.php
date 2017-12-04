@@ -470,7 +470,7 @@ class Webhook extends CI_Controller {
     $replyToken = $event['replyToken'];
 
 
-    $pemain = $this->undercovergame_m->getPlayer($votedUserId)->result();
+    $pemain = $this->undercovergame_m->getPlayerById($votedUserId)->result();
     foreach ($pemain as $player) {
       $votedUserGroupId = $player->group_id;
     }
