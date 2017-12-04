@@ -281,8 +281,9 @@ class Webhook extends CI_Controller {
                     $templateMessage = new TemplateMessageBuilder('Cek pesan pada smartphone', $buttonTemplateBuilder);
           
                     $response = $this->bot->pushMessage($player->user_id, $templateMessage);
-                  
                   }
+
+
                 }  
               }
               else
@@ -463,7 +464,8 @@ class Webhook extends CI_Controller {
   }
 
   private function postbackCallback($event)
-  {    
+  { 
+
     $userId = $event['source']['userId'];
     $userGroupId = null;
     $votedUserId = $event['postback']['data'];
@@ -472,19 +474,20 @@ class Webhook extends CI_Controller {
     $replyToken = $event['replyToken'];
 
     //get data yang divote
-    $pemain = $this->undercovergame_m->getPlayerById($votedUserId)->result();
-    foreach ($pemain as $player) {
+    $pemainVoted = $this->undercovergame_m->getPlayerById($votedUserId)->result();
+    foreach ($pemainVoted as $player) {
       $votedUserGroupId = $player->room_id;
       $votedUserNum += $player->vote_num;
     }
-
+    //lakukan vote
     $this->undercovergame_m->vote($votedUserId, $votedUserGroupId, $votedUserNum);
     
     //get data yang mem vote
-    $pemain = $this->undercovergame_m->getPlayerById($userId)->result();
-    foreach ($pemain as $player) {
+    $pemainVote = $this->undercovergame_m->getPlayerById($userId)->result();
+    foreach ($pemainVote as $player) {
       $userGroupId = $player->room_id;
     }
+    //ubah status vote jadi true
     $this->undercovergame_m->votedStatus($userId, $userGroupId, 'true');
 
 
@@ -492,8 +495,113 @@ class Webhook extends CI_Controller {
     echo $message;
     $response = $this->bot->replyMessage($replyToken, 
                                           new TextMessageBuilder($message));
-
     
+
+    $allVoted = true;
+    $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
+    foreach ($pemain as $player) {
+      if ($player->voted == false) {
+        $allVoted = false;
+      }
+    }
+                                          
+    
+    if ($allVoted) 
+    {
+      $gamePlaying = $this->undercovergame_m->getPlayingGame($userGroupId);
+      
+      
+      $civilianNumber = 0; //ambil pemain aktif saja_______________
+      $undercoverNumber = 0;//ambil pemain aktif saja________________
+      
+      foreach ($pemain as $player) {
+        if ($player->playing == true) {
+          if($player->role == 'civilia'){
+            $civilianNumber++;
+          }else{
+            $undercoverNumber++;
+          }
+        }
+      }
+
+      if($gamePlaying && ($undercoverNumber < $civilianNumber) && ($undercoverNumber != 0))
+      {
+        $idVotedMax = null;
+        $displayNameVotedMax = null;
+        $votedMax = 0;
+        // kirim hasil vote untuk pemain dengan nilai vote terbanyak
+        // code...___________________
+        foreach ($pemain as $player) {
+          if ($votedMax < $player->voted_number) {
+            $idVotedMax = $player->user_id;
+            $displayNameVotedMax = $player->display_name;
+            $votedMax = $player->voted_number;
+          }
+        }
+        // non aktifkan nilai playing dari player
+        // code...___________________
+        $this->undercovergame_m->setPlayerPlaying($userGroupId, $idVotedMax, 'false');
+
+        //announcement
+        $multiMessageBuilder = new MultiMessageBuilder();
+        $message = $displayNameVotedMax.' dikeluarkan dari permainan dengan total vote .'.$votedMax;
+        $message2 = 'Silahkan lanjutkan permainan. Untuk melakukan vote, periksa personal chat pada bot';
+        
+        $multiMessageBuilder->add( new TextMessageBuilder($message));
+        $multiMessageBuilder->add( new TextMessageBuilder($message2));
+        
+        $response = $this->bot->pushMessage($userGroupId, $templateMessage);
+
+        ///// kirim balik ulang vote untuk player yang masih playing 
+        // $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result(); //ubah menjadi get active user____________
+        $judul = 'Vote eksekusi';
+        $kalimat = 'Silahkan pilih pemain yang akan dieksekusi';
+        $playerButtons = [];
+        $i = 0;
+        foreach ($pemain as $player) {
+          if ($player->playing == true) {
+            $playerButtons[$i] = new PostbackTemplateActionBuilder($player->display_name, $player->user_id);
+            $i++;
+          }
+        }
+
+        // kirim pesan ke semua pemain
+        foreach ($pemain as $player) {
+          $imageUrl = 'https://cdn.dribbble.com/users/881160/screenshots/2152292/undercover-icon.png';
+          $buttonTemplateBuilder = new ButtonTemplateBuilder(
+              $judl,
+              $kalimat,
+              $imageUrl,
+              $playerButtons
+          );
+          $templateMessage = new TemplateMessageBuilder('Cek pesan pada smartphone', $buttonTemplateBuilder);
+
+          $response = $this->bot->pushMessage($player->user_id, $templateMessage);
+        }
+
+      }
+      else ///permainan berakhir
+      {
+        $pemenang = ($undercoverNumber == 0)? 'cilvilian':'undercover';
+
+        $message = strtoupper($pemenang).' memenangkan permainan'.PHP_EOL;
+
+        // $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
+        
+        $message = PHP_EOL.'Selamat kepada:'.PHP_EOL;
+
+        foreach ($pemain as $player) {
+          if ($player->role == $pemenang) {
+            $message .= PHP_EOL.$player->display_name;
+          }
+        }
+
+        $response = $this->bot->replyMessage($replyToken, 
+                                              new TextMessageBuilder($message));
+
+      }
+
+    }
     
   }
 
