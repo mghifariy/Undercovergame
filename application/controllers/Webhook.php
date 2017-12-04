@@ -493,16 +493,36 @@ class Webhook extends CI_Controller {
         $votedUserGroupId = $player->room_id;
         $votedUserNum += $player->vote_num;
       }
-      //lakukan vote
-      $this->undercovergame_m->vote($votedUserId, $votedUserGroupId, $votedUserNum);
-      
-      //ubah status vote jadi true
-      $this->undercovergame_m->votedStatus($userId, $userGroupId, 'true');
-      
       
       $status = '';
       $jumlahPemain = 0;
       $jumlahVote = 0;
+      //lakukan vote
+      $this->undercovergame_m->vote($votedUserId, $votedUserGroupId, $votedUserNum);
+      
+      
+      $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
+      foreach ($pemain as $player) {
+        if ($player->playing) {
+          $jumlahPemain++;
+          if ($player->voted) {
+            $jumlahVote++;
+          }
+        }
+        $status .= $player->voted.$player->display_name.$player->playing.PHP_EOL.$jumlahPemain.$jumlahUndercover;
+      }
+
+      // //DEBUG
+      echo PHP_EOL.$status;
+
+      $status = '';
+      $jumlahPemain = 0;
+      $jumlahVote = 0;
+
+      //ubah status vote jadi true
+      $this->undercovergame_m->votedStatus($userId, $userGroupId, 'true');
+      
+      
 
       $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
       foreach ($pemain as $player) {
@@ -512,7 +532,7 @@ class Webhook extends CI_Controller {
             $jumlahVote++;
           }
         }
-        $status .= $player->voted.$player->display_name.$player->playing.PHP_EOL;
+        $status .= $player->voted.$player->display_name.$player->playing.PHP_EOL.$jumlahPemain.$jumlahUndercover;
       }
 
       // //DEBUG
@@ -540,7 +560,7 @@ class Webhook extends CI_Controller {
             }else{
               $undercoverNumber++;
             }
-            $this->undercovergame_m->votedStatus($player->user_id, $player->group_id, 'false');
+            $this->undercovergame_m->votedStatus($player->user_id, $player->room_id, 'false');
           }
         }
         //DEBUG
@@ -643,8 +663,8 @@ class Webhook extends CI_Controller {
           //                                       new TextMessageBuilder($message));
           
           // JANGAN LUPA NYALAIN
-          $this->undercovergame_m->resetPlayer($userGroupId);
-          $this->undercovergame_m->deleteGame($userGroupId);
+          // $this->undercovergame_m->resetPlayer($userGroupId);
+          // $this->undercovergame_m->deleteGame($userGroupId);
 
         }
 
