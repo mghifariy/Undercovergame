@@ -613,8 +613,8 @@ class Webhook extends CI_Controller {
         echo PHP_EOL.$message;
 
         $multiMessageBuilder = new MultiMessageBuilder();
-        $message2 = '[Permainan Berakhir]'.PHP_EOL;
-        $message2 .= 'Silahkan .buat permainan baru untuk bermain kembali';
+        $message2 = '[PERMAINAN BERAKHIR]'.PHP_EOL.PHP_EOL;
+        $message2 .= 'Silahkan buat permainan baru untuk bermain kembali';
         $multiMessageBuilder->add( new TextMessageBuilder($message));
         $multiMessageBuilder->add( new TextMessageBuilder($message2));
         
@@ -622,9 +622,10 @@ class Webhook extends CI_Controller {
 
         // $response = $this->bot->pushMessage($userGroupId, 
         //                                       new TextMessageBuilder($message));
+        
         // JANGAN LUPA NYALAIN
-        // $this->undercovergame_m->resetPlayer($roomId);
-        // $this->undercovergame_m->deleteGame($roomId);
+        $this->undercovergame_m->resetPlayer($roomId);
+        $this->undercovergame_m->deleteGame($roomId);
 
       }
 
