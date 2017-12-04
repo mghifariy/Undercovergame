@@ -477,7 +477,7 @@ class Webhook extends CI_Controller {
       $votedUserNum += $player->vote_num;
     }
 
-    $this->undercover_m->vote($votedUserId, $votedUserGroupId, $votedUserNum);
+    $this->undercovergame_m->vote($votedUserId, $votedUserGroupId, $votedUserNum);
 
 
     $message = 'Vote anda berhasil dilakukan untuk '.$votedUserId.'. Pada grup '.$votedUserGroupId.' menjadi '.$votedUserNum;
