@@ -481,6 +481,7 @@ class Webhook extends CI_Controller {
 
 
     $message = 'Vote anda berhasil dilakukan untuk '.$votedUserId.'. Pada grup '.$votedUserGroupId.' menjadi '.$votedUserNum;
+    echo $message;
     $response = $this->bot->replyMessage($replyToken, 
                                           new TextMessageBuilder($message));
 
