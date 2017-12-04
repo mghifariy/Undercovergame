@@ -249,7 +249,9 @@ class Webhook extends CI_Controller {
                   }
 
 
-                  $message = 'Game DIMULAI, untuk melakukan vote silahkan cek personal chat pada bot';
+                  $message = '[PERMAINAN DIMULAI]'.PHP_EOL.PHP_EOL;
+                  $message.= 'Silahkan sebutkan pentunjuk katamu di grup ini'.PHP_EOL.PHP_EOL;
+                  $message.= 'Untuk melakukan vote silahkan cek personal chat pada bot';
                   $response = $this->bot->replyMessage($replyToken, 
                                                         new TextMessageBuilder($message));
 
@@ -491,8 +493,8 @@ class Webhook extends CI_Controller {
     $this->undercovergame_m->votedStatus($userId, $userGroupId, 'true');
 
 
-    $message = 'Vote anda berhasil dilakukan untuk '.$votedUserId.'. Pada grup '.$votedUserGroupId.' menjadi '.$votedUserNum;
-    echo $message;
+    $message = 'Vote anda berhasil dilakukan';
+    // echo $message;
     $response = $this->bot->replyMessage($replyToken, 
                                           new TextMessageBuilder($message));
     
@@ -525,7 +527,7 @@ class Webhook extends CI_Controller {
         }
       }
       //DEBUG
-      echo PHP_EOL.$civilianNumber.$undercoverNumber.' game playing status '.$gamePlaying;
+      // echo PHP_EOL.$civilianNumber.$undercoverNumber.' game playing status '.$gamePlaying;
 
       if($gamePlaying && ($undercoverNumber < $civilianNumber) && ($undercoverNumber != 0))
       {
@@ -551,7 +553,7 @@ class Webhook extends CI_Controller {
         $message2 = 'Silahkan lanjutkan permainan. Untuk melakukan vote, periksa personal chat pada bot';
         
         //DEBUG
-        echo $message;
+        // echo $message;
 
         $multiMessageBuilder->add( new TextMessageBuilder($message));
         $multiMessageBuilder->add( new TextMessageBuilder($message2));
@@ -587,7 +589,7 @@ class Webhook extends CI_Controller {
             $response = $this->bot->pushMessage($player->user_id, $templateMessage);
           }
           //DEBUG
-          echo PHP_EOL.$player->display_name.' telah dikirimi vote baru';
+          // echo PHP_EOL.$player->display_name.' telah dikirimi vote baru';
         }
 
 
@@ -607,7 +609,7 @@ class Webhook extends CI_Controller {
             $message = $message.PHP_EOL.$player->display_name;
           }
           //DEBUG
-          echo PHP_EOL.$player->display_name.' ada di list pemain sebagai '.$player->role;
+          // echo PHP_EOL.$player->display_name.' ada di list pemain sebagai '.$player->role;
         }
 
         echo PHP_EOL.$message;
