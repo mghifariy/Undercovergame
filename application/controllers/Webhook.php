@@ -592,7 +592,7 @@ class Webhook extends CI_Controller {
       }
       else ///permainan berakhir
       {
-        $pemenang = $undercoverNumber == 0 ? 'cilvilian':'undercover';
+        $pemenang = $undercoverNumber == 0 ? 'civilian':'undercover';
 
         $message = strtoupper($pemenang).' memenangkan permainan'.PHP_EOL;
 
