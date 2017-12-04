@@ -190,4 +190,14 @@ class Undercovergame_m extends CI_Model {
     if(count($player->result())>0) return $player;
     return false;
   }
+
+  function getPlayerById($id) 
+  {
+    $player = $this->db->select('*')
+    ->from('players')
+    ->where('user_id', $id)
+    ->get();
+    if(count($player->result())>0) return $player;
+    return false;
+  }
 }
