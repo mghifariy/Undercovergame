@@ -49,60 +49,60 @@ class Webhook extends CI_Controller {
         $this->user = $this->undercovergame_m->getUser($event['source']['userId']);
  
         // game Running
-        if(isset($event['source']['roomId']) || isset($event['source']['groupId'])) 
-        {
-          $roomId = (isset($event['source']['roomId'])) ? $event['source']['roomId'] : $event['source']['groupId'];
-          $waktuDiskusi = true;
-          $waktuVote = true;
-          if ($this->undercovergame_m->getPlayingGame($roomId)) 
-          {
-            if ($waktuDiskusi)
-            {
-              $message = "Dipersilahkan kepada pemain untuk menyebutkan petunjuk mengenai kata masing-masing dalam 2 menit.";
-              $this->bot->pushMessage($roomId, new TextMessageBuilder($message));
-            }
+        // if(isset($event['source']['roomId']) || isset($event['source']['groupId'])) 
+        // {
+        //   $roomId = (isset($event['source']['roomId'])) ? $event['source']['roomId'] : $event['source']['groupId'];
+        //   $waktuDiskusi = true;
+        //   $waktuVote = true;
+        //   if ($this->undercovergame_m->getPlayingGame($roomId)) 
+        //   {
+        //     if ($waktuDiskusi)
+        //     {
+        //       $message = "Dipersilahkan kepada pemain untuk menyebutkan petunjuk mengenai kata masing-masing dalam 2 menit.";
+        //       $this->bot->pushMessage($roomId, new TextMessageBuilder($message));
+        //     }
             
-            if ($waktuVote) 
-            {
-              $message = "Waktunya vote, silahkan cek personal chat masing-masing !";
-              $this->bot->pushMessage($roomId, new TextMessageBuilder($message));
+        //     if ($waktuVote) 
+        //     {
+        //       $message = "Waktunya vote, silahkan cek personal chat masing-masing !";
+        //       $this->bot->pushMessage($roomId, new TextMessageBuilder($message));
 
-              $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
-              //$players = $pemain->getJSONDecodedBody();
-              $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
+        //       $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
+        //       //$players = $pemain->getJSONDecodedBody();
+        //       $message = 'Yang udah Join game: '.PHP_EOL.'Dayat';
               
-              $playerButtons = [];
-              $i = 0;
-              foreach ($pemain as $player) {
-                $playerButtons[$i] = new PostbackTemplateActionBuilder($player->display_name, 'action=buy&itemid=123');
-                $i++;
-              }
+        //       $playerButtons = [];
+        //       $i = 0;
+        //       foreach ($pemain as $player) {
+        //         $playerButtons[$i] = new PostbackTemplateActionBuilder($player->display_name, 'action=buy&itemid=123');
+        //         $i++;
+        //       }
 
 
 
 
-              foreach ($pemain as $player) {
-                $imageUrl = 'https://cdn.dribbble.com/users/881160/screenshots/2152292/undercover-icon.png';
-                $buttonTemplateBuilder = new ButtonTemplateBuilder(
-                    'My button sample',
-                    'Hello my button',
-                    $imageUrl,
-                    $playerButtons
-                    // [
-                    //     new PostbackTemplateActionBuilder('Buy', 'action=buy&itemid=123'),
-                    //     new MessageTemplateActionBuilder('Say message', 'hello hello'),
-                    // ]
-                );
-                $templateMessage = new TemplateMessageBuilder('Button alt text', $buttonTemplateBuilder);
-                //$this->bot->replyMessage($replyToken, $templateMessage);
-                $response = $this->bot->pushMessage($player->user_id, $templateMessage);
-              }
+        //       foreach ($pemain as $player) {
+        //         $imageUrl = 'https://cdn.dribbble.com/users/881160/screenshots/2152292/undercover-icon.png';
+        //         $buttonTemplateBuilder = new ButtonTemplateBuilder(
+        //             'My button sample',
+        //             'Hello my button',
+        //             $imageUrl,
+        //             $playerButtons
+        //             // [
+        //             //     new PostbackTemplateActionBuilder('Buy', 'action=buy&itemid=123'),
+        //             //     new MessageTemplateActionBuilder('Say message', 'hello hello'),
+        //             // ]
+        //         );
+        //         $templateMessage = new TemplateMessageBuilder('Button alt text', $buttonTemplateBuilder);
+        //         //$this->bot->replyMessage($replyToken, $templateMessage);
+        //         $response = $this->bot->pushMessage($player->user_id, $templateMessage);
+        //       }
 
 
 
-            }
-          }
-        }  
+        //     }
+        //   }
+        // }  
 
         // if user not registered
         if(!$this->user) $this->followCallback($event);
@@ -165,6 +165,7 @@ class Webhook extends CI_Controller {
   private function textMessage($event) {
     $userMessage = $event['message']['text'];
     $replyToken = $event['replyToken'];
+    $playerPlayingStatus = true;
 
     if(isset($event['source']['roomId']) || isset($event['source']['groupId'])) {
       $roomId = (isset($event['source']['roomId'])) ? $event['source']['roomId'] : $event['source']['groupId'];
@@ -235,7 +236,7 @@ class Webhook extends CI_Controller {
             {
               if(!$this->undercovergame_m->getPlayinggame($roomId)){
                 $jumlahPemain = $this->undercovergame_m->getPlayer($roomId)->num_rows();
-                $minimalPlayer = 2;
+                $minimalPlayer = 1;
                 
                 if ($jumlahPemain < $minimalPlayer) {
                   $message = 'Jumlah Pemain Minimal 4 orang';
@@ -304,10 +305,40 @@ class Webhook extends CI_Controller {
                   }
 
 
-                  $message = 'Game akan segera dimulai, silahkan cek personal chat pada bot';
+                  $message = 'Game DIMULAI, untuk melakukan vote silahkan cek personal chat pada bot';
                   $response = $this->bot->replyMessage($replyToken, 
                                                         new TextMessageBuilder($message));
 
+
+                  // voting
+
+                  $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
+                  $judul = 'Vote eksekusi';
+                  $kalimat = 'Silahkan pilih pemain yang akan dieksekusi';
+                  $playerButtons = [];
+                  $i = 0;
+                  foreach ($pemain as $player) {
+                    $playerButtons[$i] = new PostbackTemplateActionBuilder($player->display_name, 'action=vote&targerId='.$player->user_id);
+                    $i++;
+                  }
+
+                  foreach ($pemain as $player) {
+                    $imageUrl = 'https://cdn.dribbble.com/users/881160/screenshots/2152292/undercover-icon.png';
+                    $buttonTemplateBuilder = new ButtonTemplateBuilder(
+                        $judl,
+                        $kalimat,
+                        $imageUrl,
+                        $playerButtons
+                        // [
+                        //     new PostbackTemplateActionBuilder('Buy', 'action=buy&itemid=123'),
+                        //     new MessageTemplateActionBuilder('Say message', 'hello hello'),
+                        // ]
+                    );
+                    $templateMessage = new TemplateMessageBuilder('Cek pesan pada smartphone', $buttonTemplateBuilder);
+          
+                    $response = $this->bot->pushMessage($player->user_id, $templateMessage);
+                  
+                  }
                 }  
               }
               else
@@ -485,6 +516,10 @@ class Webhook extends CI_Controller {
 
           break;
       }
+    }
+    elseif($playerPlayingStatus)
+    {
+
     }
     else
     {
