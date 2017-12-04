@@ -316,7 +316,7 @@ class Webhook extends CI_Controller {
           {
             
             //sudah ada game
-            if(!$this->undercovergame_m->getGame($roomId)) {
+            if($this->undercovergame_m->getGame($roomId)) {
               
               $pemain = $this->undercovergame_m->getPlayer($roomId)->result();
               //$players = $pemain->getJSONDecodedBody();
