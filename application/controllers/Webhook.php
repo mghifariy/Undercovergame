@@ -657,8 +657,8 @@ class Webhook extends CI_Controller {
     $multiMessageBuilder->add($stickerMessageBuilder);
 
     // send reply message
+    $this->bot->pushMessage($event['source']['groupId'], $multiMessageBuilder);
     $this->bot->replyMessage($event['replyToken'], $multiMessageBuilder);
-    
     
   }
   
