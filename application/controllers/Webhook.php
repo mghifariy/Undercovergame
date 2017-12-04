@@ -525,7 +525,7 @@ class Webhook extends CI_Controller {
         }
       }
       //DEBUG
-      echo PHPL_EOL.$civilianNumber.$undercoverNumber;
+      echo PHP_EOL.$civilianNumber.$undercoverNumber.' game playing status '.$gamePlaying;
 
       if($gamePlaying && ($undercoverNumber < $civilianNumber) && ($undercoverNumber != 0))
       {
@@ -592,23 +592,23 @@ class Webhook extends CI_Controller {
       }
       else ///permainan berakhir
       {
-        $pemenang = ($undercoverNumber == 0)? 'cilvilian':'undercover';
+        $pemenang = $undercoverNumber == 0 ? 'cilvilian':'undercover';
 
         $message = strtoupper($pemenang).' memenangkan permainan'.PHP_EOL;
 
         // $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
         
-        $message = PHP_EOL.'Selamat kepada:'.PHP_EOL;
+        $message .= PHP_EOL.'Selamat kepada:'.PHP_EOL;
 
         foreach ($pemain as $player) {
           if ($player->role == $pemenang) {
-            $message .= PHP_EOL.$player->display_name;
+            $message = $message.PHP_EOL.$player->display_name;
           }
         }
 
-        echo $message;
+        echo PHP_EOL.$message;
 
-        $response = $this->bot->replyMessage($replyToken, 
+        $response = $this->bot->pushMessage($userGroupId, 
                                               new TextMessageBuilder($message));
 
       }
