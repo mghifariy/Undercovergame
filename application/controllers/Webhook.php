@@ -612,6 +612,7 @@ class Webhook extends CI_Controller {
 
         echo PHP_EOL.$message;
 
+        $multiMessageBuilder = new MultiMessageBuilder();
         $message2 = '[Permainan Berakhir]'.PHP_EOL;
         $message2 .= 'Silahkan .buat permainan baru untuk bermain kembali';
         $multiMessageBuilder->add( new TextMessageBuilder($message));
