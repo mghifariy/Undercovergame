@@ -639,7 +639,7 @@ class Webhook extends CI_Controller {
   }
 
   private function joinCallback($event) {
-    $replayToken = $event['replyToken'];
+    $replyToken = $event['replyToken'];
 
     // create welcome message
     $message  = "Halo, " . 'semuanya' . "!\n";
@@ -659,8 +659,6 @@ class Webhook extends CI_Controller {
     // send reply message
     $this->bot->replyMessage($event['replyToken'], $multiMessageBuilder);
     
-    // save user data
-    $this->undercovergame_m->saveUser($profile);
     
   }
   
