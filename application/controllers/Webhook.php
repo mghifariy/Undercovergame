@@ -484,8 +484,8 @@ class Webhook extends CI_Controller {
       $voted = $player->voted;
     }
     
-    // if(!$voted)
-    // {
+    if($voted != 't')
+    {
 
       //get data yang divote
       $pemainVoted = $this->undercovergame_m->getPlayerById($votedUserId)->result();
@@ -522,8 +522,6 @@ class Webhook extends CI_Controller {
       //ubah status vote jadi true
       $this->undercovergame_m->votedStatus($userId, $userGroupId, 'true');
       
-      
-
       $pemain = $this->undercovergame_m->getPlayer($userGroupId)->result();
       foreach ($pemain as $player) {
         if ($player->playing=='t') {
@@ -540,7 +538,7 @@ class Webhook extends CI_Controller {
       
 
       $message = 'Vote anda berhasil dilakukan';
-      $message .= PHP_EOL.$status;
+      // $message .= PHP_EOL.$status;
       // echo $message;
       $response = $this->bot->replyMessage($replyToken, 
                                             new TextMessageBuilder($message));
@@ -554,7 +552,7 @@ class Webhook extends CI_Controller {
         $undercoverNumber = 0;//ambil pemain aktif saja________________
         
         foreach ($pemain as $player) {
-          if ($player->playing) {
+          if ($player->playing=='t') {
             if($player->role == 'civilian'){
               $civilianNumber++;
             }else{
@@ -604,7 +602,7 @@ class Webhook extends CI_Controller {
           $playerButtons = [];
           $i = 0;
           foreach ($pemain as $player) {
-            if ($player->playing == true) {
+            if ($player->playing == 't') {
               $playerButtons[$i] = new PostbackTemplateActionBuilder($player->display_name, $player->user_id);
               $i++;
             }
@@ -621,7 +619,7 @@ class Webhook extends CI_Controller {
           
           // kirim pesan ke semua pemain
           foreach ($pemain as $player) {
-            if ($player->playing == true) {
+            if ($player->playing == 't') {
               # code...
               $response = $this->bot->pushMessage($player->user_id, $templateMessage);
             }
@@ -672,6 +670,6 @@ class Webhook extends CI_Controller {
       
     }
 
-  // }
+  }
 
 }
