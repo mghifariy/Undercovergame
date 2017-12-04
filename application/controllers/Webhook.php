@@ -504,8 +504,8 @@ class Webhook extends CI_Controller {
         $allVoted = false;
       }
     }
-    //DEBUG
-    echo PHP_EOL.$allVoted;
+    // //DEBUG
+    // echo PHP_EOL.$allVoted;
                                           
     
     if ($allVoted) 
@@ -586,6 +586,7 @@ class Webhook extends CI_Controller {
             # code...
             $response = $this->bot->pushMessage($player->user_id, $templateMessage);
           }
+          echo PHP_EOL.$player->display_name;
         }
 
 
