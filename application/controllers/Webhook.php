@@ -504,26 +504,28 @@ class Webhook extends CI_Controller {
         $allVoted = false;
       }
     }
-    echo $allVoted;
+    //DEBUG
+    echo PHP_EOL.$allVoted;
                                           
     
     if ($allVoted) 
     {
       $gamePlaying = $this->undercovergame_m->getPlayingGame($userGroupId);
       
-      
       $civilianNumber = 0; //ambil pemain aktif saja_______________
       $undercoverNumber = 0;//ambil pemain aktif saja________________
       
       foreach ($pemain as $player) {
         if ($player->playing == true) {
-          if($player->role == 'civilia'){
+          if($player->role == 'civilian'){
             $civilianNumber++;
           }else{
             $undercoverNumber++;
           }
         }
       }
+      //DEBUG
+      echo PHPL_EOL.$civilianNumber.$undercoverNumber;
 
       if($gamePlaying && ($undercoverNumber < $civilianNumber) && ($undercoverNumber != 0))
       {
@@ -548,6 +550,9 @@ class Webhook extends CI_Controller {
         $message = $displayNameVotedMax.' dikeluarkan dari permainan dengan total vote .'.$votedMax;
         $message2 = 'Silahkan lanjutkan permainan. Untuk melakukan vote, periksa personal chat pada bot';
         
+        //DEBUG
+        echo $message;
+
         $multiMessageBuilder->add( new TextMessageBuilder($message));
         $multiMessageBuilder->add( new TextMessageBuilder($message2));
         
@@ -565,20 +570,24 @@ class Webhook extends CI_Controller {
             $i++;
           }
         }
-
+        // buat pesan
+        $imageUrl = 'https://cdn.dribbble.com/users/881160/screenshots/2152292/undercover-icon.png';
+        $buttonTemplateBuilder = new ButtonTemplateBuilder(
+            $judl,
+            $kalimat,
+            $imageUrl,
+            $playerButtons
+        );
+        $templateMessage = new TemplateMessageBuilder('Cek pesan pada smartphone', $buttonTemplateBuilder);
+        
         // kirim pesan ke semua pemain
         foreach ($pemain as $player) {
-          $imageUrl = 'https://cdn.dribbble.com/users/881160/screenshots/2152292/undercover-icon.png';
-          $buttonTemplateBuilder = new ButtonTemplateBuilder(
-              $judl,
-              $kalimat,
-              $imageUrl,
-              $playerButtons
-          );
-          $templateMessage = new TemplateMessageBuilder('Cek pesan pada smartphone', $buttonTemplateBuilder);
-
-          $response = $this->bot->pushMessage($player->user_id, $templateMessage);
+          if ($player->playing == true) {
+            # code...
+            $response = $this->bot->pushMessage($player->user_id, $templateMessage);
+          }
         }
+
 
       }
       else ///permainan berakhir
@@ -596,6 +605,8 @@ class Webhook extends CI_Controller {
             $message .= PHP_EOL.$player->display_name;
           }
         }
+
+        echo $message;
 
         $response = $this->bot->replyMessage($replyToken, 
                                               new TextMessageBuilder($message));
