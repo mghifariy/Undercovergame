@@ -607,13 +607,23 @@ class Webhook extends CI_Controller {
             $message = $message.PHP_EOL.$player->display_name;
           }
           //DEBUG
-          echo PHP_EOL.$player->display_name.' ada di list pemain';
+          echo PHP_EOL.$player->display_name.' ada di list pemain sebagai '.$player->role;
         }
 
         echo PHP_EOL.$message;
 
+        $message2 = '[Permainan Berakhir]'.PHP_EOL;
+        $message2 .= 'Silahkan .buat permainan baru untuk bermain kembali';
+        $multiMessageBuilder->add( new TextMessageBuilder($message));
+        $multiMessageBuilder->add( new TextMessageBuilder($message2));
+        
+        $response = $this->bot->pushMessage($userGroupId, $templateMessage);
+
         $response = $this->bot->pushMessage($userGroupId, 
                                               new TextMessageBuilder($message));
+        // JANGAN LUPA NYALAIN
+        // $this->undercovergame_m->resetPlayer($roomId);
+        // $this->undercovergame_m->deleteGame($roomId);
 
       }
 
