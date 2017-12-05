@@ -469,7 +469,7 @@ class Webhook extends CI_Controller {
     $votedUserGroupId = null;
     $votedUserNum = 1;
     $replyToken = $event['replyToken'];
-
+    echo 'data masuk ke post callback';
     $voted = null; 
     //get data yang mem vote
     $pemainVote = $this->undercovergame_m->getPlayerById($userId)->result();
