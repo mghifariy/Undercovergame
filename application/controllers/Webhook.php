@@ -548,12 +548,14 @@ class Webhook extends CI_Controller {
           $idVotedMax = null;
           $displayNameVotedMax = null;
           $votedMax = 0;
+          $votedMaxRole = null;
           // kirim hasil vote untuk pemain dengan nilai vote terbanyak
           // code...___________________
           foreach ($pemain as $player) {
             if ($votedMax < $player->voted_number) {
               $idVotedMax = $player->user_id;
               $displayNameVotedMax = $player->display_name;
+              $votedMaxRole = $player->role;
               $votedMax = $player->voted_number;
             }
           }
@@ -563,7 +565,7 @@ class Webhook extends CI_Controller {
 
           //announcement
           $multiMessageBuilder = new MultiMessageBuilder();
-          $message = $displayNameVotedMax.' dikeluarkan dari permainan dengan total vote .'.$votedMax;
+          $message = strtoupper($displayNameVotedMax).' dikeluarkan dari permainan dengan total vote '.$votedMax.'. Dia adalah seorang '.strtoupper($votedMaxRole);
           $message2 = 'Silahkan lanjutkan permainan. Untuk melakukan vote, periksa personal chat pada bot';
           
           //DEBUG
