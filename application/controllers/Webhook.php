@@ -447,7 +447,7 @@ class Webhook extends CI_Controller {
       if(preg_match("/~tambah$/i", $userMessage))
       {
         $data = explode(" ",$userMessage);
-        $this->undercovergame_m->inputWord($data[0],$data[1]);
+        $this->undercovergame_m->inputWord(strtoupper($data[0]),strtoupper($data[1]));
         $message = 'Kata baru berhasil ditambahkan';
         $response = $this->bot->replyMessage($replyToken, new TextMessageBuilder($message));
       }
