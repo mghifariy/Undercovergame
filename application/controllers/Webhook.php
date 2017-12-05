@@ -464,6 +464,7 @@ class Webhook extends CI_Controller {
 
     $userId = $event['source']['userId'];
     $userGroupId = null;
+    $userDisplayName = null;
     $votedUserId = $event['postback']['data'];
     $votedUserGroupId = null;
     $votedUserNum = 1;
@@ -475,6 +476,7 @@ class Webhook extends CI_Controller {
     foreach ($pemainVote as $player) {
       $userGroupId = $player->room_id;
       $voted = $player->voted;
+      $userDisplayName = $player->display_name;
     }
     
     if($voted != 't')
@@ -510,14 +512,15 @@ class Webhook extends CI_Controller {
       }
 
       // //DEBUG
-      echo PHP_EOL.$status;
+      // echo PHP_EOL.$status;
       
 
       $message = 'Vote anda berhasil dilakukan';
-      // $message .= PHP_EOL.$status;
-      // echo $message;
-      $response = $this->bot->replyMessage($replyToken, 
-                                            new TextMessageBuilder($message));
+      $response = $this->bot->replyMessage($replyToken, new TextMessageBuilder($message));
+      
+      //umumkan dia sudah vote
+      $message = strtoupper($userDisplayName).' telah melakukan vote.';
+      $response = $this->bot->pushMessage($userGroupId, new TextMessageBuilder($message));
       
                                             
       if ($jumlahVote == $jumlahPemain) 
@@ -537,9 +540,9 @@ class Webhook extends CI_Controller {
             $this->undercovergame_m->votedStatus($player->user_id, $player->room_id, 'false');
           }
         }
-        //DEBUG
-        // echo PHP_EOL.$civilianNumber.$undercoverNumber.' game playing status '.$gamePlaying;
+      
 
+        //Permainan masih berlangsung
         if($gamePlaying && ($undercoverNumber < $civilianNumber) && ($undercoverNumber != 0))
         {
           $idVotedMax = null;
