@@ -663,7 +663,7 @@ class Webhook extends CI_Controller {
 
     // create welcome message
     $message  = "Halo, " . 'semuanya' . "!\n";
-    $message .= "Terimakasih sudah mengundang saya ke grup ini\n";
+    $message .= "Terimakasih sudah mengundang saya ke ".$event['source']['type']." ini\n";
     $message .= "Silahkan add saya untuk mulai bermain Undercover^^ \n\n";
     $message .= "Untuk melihat daftar perintah, silahkan ketik .bantuan";
     $textMessageBuilder = new TextMessageBuilder($message);
@@ -677,7 +677,7 @@ class Webhook extends CI_Controller {
     $multiMessageBuilder->add($stickerMessageBuilder);
 
     // send reply message
-    $this->bot->pushMessage($event['source']['groupId'], $multiMessageBuilder);
+    //$this->bot->pushMessage($event['source']['groupId'], $multiMessageBuilder);
     $this->bot->replyMessage($event['replyToken'], $multiMessageBuilder);
     
   }
