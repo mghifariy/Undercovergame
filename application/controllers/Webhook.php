@@ -46,6 +46,10 @@ class Webhook extends CI_Controller {
     if(is_array($this->events['events'])) {
       foreach ($this->events['events'] as $event) {
         // get user data from database
+        if($event['type'] == 'join'){
+          $this->joinCallback($event);
+          break;
+        }
         $this->user = $this->undercovergame_m->getUser($event['source']['userId']);
 
         // if user not registered
