@@ -439,14 +439,23 @@ class Webhook extends CI_Controller {
           break;
 
         default:
-          break;
+        break;
       }
     }
     else
     {
-      $message = 'Perintah hanya bisa dilakukan di grup';
-      $response = $this->bot->replyMessage($replyToken, 
-                                            new TextMessageBuilder($message));
+      if(preg_match("/~tambah$/i", $userMessage))
+      {
+        $data = explode(" ",$userMessage);
+        $this->undercovergame_m->inputWord($data[0],$data[1]);
+        $message = 'Kata baru berhasil ditambahkan';
+        $response = $this->bot->replyMessage($replyToken, new TextMessageBuilder($message));
+      }
+      else
+      {
+        $message = 'Perintah hanya bisa dilakukan di grup';
+        $response = $this->bot->replyMessage($replyToken, new TextMessageBuilder($message));
+      }
     }
   }
 

@@ -216,4 +216,14 @@ class Undercovergame_m extends CI_Model {
     ->set('voted', $voted)
     ->update('players');
   }
+
+  function inputWord($word_a, $word_b) {
+    $this->db
+    ->set('word_a', $word_a)
+    ->set('word_b', $word_b)
+    ->insert('words');
+
+    return $this->db->insert_id();
+  }
+
 }
